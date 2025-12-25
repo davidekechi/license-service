@@ -1,10 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules\Shared\Core\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * Automatically generates ULIDs for models
+ *
+ * @phpstan-ignore-next-line trait.unused
+ */
 trait HasUlid
 {
     /**

@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -27,13 +28,13 @@ return new class extends Migration
             $table->index('product_id');
             $table->index('status');
             $table->index('expires_at');
-            
+
             // Foreign key to products using ULID
             $table->foreign('product_id')
                   ->references('public_id')
                   ->on('products')
                   ->onDelete('cascade');
-                  
+
             // Unique constraint: one license per product per license key
             $table->unique(['license_key_id', 'product_id']);
         });

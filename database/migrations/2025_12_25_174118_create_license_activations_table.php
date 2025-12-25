@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -28,7 +29,7 @@ return new class extends Migration
             $table->index('instance_identifier');
             $table->index('deactivated_at');
             $table->index(['license_id', 'deactivated_at']); // For counting active seats
-            
+
             // Unique constraint: one activation per instance per license
             $table->unique(['license_id', 'instance_identifier']);
         });
