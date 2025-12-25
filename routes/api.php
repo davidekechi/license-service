@@ -20,7 +20,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/health', function () {
         return response()->json([
             'status'      => 'healthy',
-            'message'     => 'Skills Guide API is running',
+            'message'     => 'License Service API is running',
             'timestamp'   => now()->toISOString(),
             'version'     => '1.0.0',
             'environment' => app()->environment()
