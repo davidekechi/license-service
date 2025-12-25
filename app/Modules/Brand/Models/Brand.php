@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\Brand\Models;
 
 use App\Modules\Shared\Core\Traits\HasUlid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 /**
@@ -22,19 +22,14 @@ use Illuminate\Support\Str;
  */
 class Brand extends Model
 {
-    use HasFactory;
     use HasUlid;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
      */
     protected $table = 'brands';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'slug',
@@ -48,13 +43,13 @@ class Brand extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'is_active' => 'boolean',
+        'is_active'  => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
     /**
-     * Get the products for the brand.
+     * @return HasMany<Product, $this>
      */
     public function products(): HasMany
     {
@@ -66,10 +61,10 @@ class Brand extends Model
      */
     public static function generateApiKey(string $brandSlug): string
     {
-        $prefix = 'sk_live_' . $brandSlug . '_';
+        $prefix       = 'sk_live_' . $brandSlug . '_';
         $randomString = Str::random(64);
-        
-        return $prefix . hash('sha256', $randomString);
+
+        return $prefix . \hash('sha256', $randomString);
     }
 
     /**

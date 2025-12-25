@@ -6,19 +6,19 @@ namespace App\Modules\License\Enums;
 
 enum LicenseStatus: string
 {
-    case VALID = 'valid';
+    case VALID     = 'valid';
     case SUSPENDED = 'suspended';
     case CANCELLED = 'cancelled';
-    case EXPIRED = 'expired';
+    case EXPIRED   = 'expired';
 
     /**
      * Get all possible values
-     * 
+     *
      * @return array<string>
      */
     public static function values(): array
     {
-        return array_column(self::cases(), 'value');
+        return \array_column(self::cases(), 'value');
     }
 
     /**
@@ -27,10 +27,10 @@ enum LicenseStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::VALID => 'Valid',
+            self::VALID     => 'Valid',
             self::SUSPENDED => 'Suspended',
             self::CANCELLED => 'Cancelled',
-            self::EXPIRED => 'Expired',
+            self::EXPIRED   => 'Expired',
         };
     }
 

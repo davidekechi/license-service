@@ -6,9 +6,9 @@ namespace App\Modules\License\Models;
 
 use App\Modules\License\Enums\InstanceType;
 use App\Modules\Shared\Core\Traits\HasUlid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -26,19 +26,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class LicenseActivation extends Model
 {
-    use HasFactory;
     use HasUlid;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
      */
     protected $table = 'license_activations';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'license_id',
         'instance_identifier',
@@ -55,19 +50,18 @@ class LicenseActivation extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'license_id' => 'integer',
-        'instance_type' => InstanceType::class,
-        'instance_meta' => 'array',
-        'activated_at' => 'datetime',
+        'license_id'      => 'integer',
+        'instance_type'   => InstanceType::class,
+        'instance_meta'   => 'array',
+        'activated_at'    => 'datetime',
         'last_checked_at' => 'datetime',
-        'deactivated_at' => 'datetime',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'deactivated_at'  => 'datetime',
+        'created_at'      => 'datetime',
+        'updated_at'      => 'datetime',
     ];
 
     /**
-     * Get the license that owns the activation.
-     * Same module relationship - use Laravel relationship
+     * @return BelongsTo<License, $this>
      */
     public function license(): BelongsTo
     {
@@ -100,6 +94,7 @@ class LicenseActivation extends Model
     public function deactivate(): bool
     {
         $this->deactivated_at = now();
+
         return $this->save();
     }
 
@@ -109,6 +104,7 @@ class LicenseActivation extends Model
     public function updateHeartbeat(): bool
     {
         $this->last_checked_at = now();
+
         return $this->save();
     }
 }

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\License\Models;
 
 use App\Modules\Shared\Core\Traits\HasUlid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -20,19 +20,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class LicenseKey extends Model
 {
-    use HasFactory;
     use HasUlid;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
      */
     protected $table = 'license_keys';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'key',
         'brand_id',
@@ -50,8 +45,7 @@ class LicenseKey extends Model
     ];
 
     /**
-     * Get the licenses for the license key.
-     * Same module relationship - use Laravel relationship
+     * @return HasMany<License, $this>
      */
     public function licenses(): HasMany
     {
@@ -59,7 +53,7 @@ class LicenseKey extends Model
     }
 
     /**
-     * Get active licenses only.
+     * @return HasMany<License, $this>
      */
     public function activeLicenses(): HasMany
     {

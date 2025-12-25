@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\Brand\Models;
 
 use App\Modules\Shared\Core\Traits\HasUlid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -23,19 +23,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Product extends Model
 {
-    use HasFactory;
     use HasUlid;
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
      */
     protected $table = 'products';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'brand_id',
         'name',
@@ -44,21 +39,16 @@ class Product extends Model
         'is_active',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'brand_id' => 'integer',
-        'max_seats' => 'integer',
-        'is_active' => 'boolean',
+        'brand_id'   => 'integer',
+        'max_seats'  => 'integer',
+        'is_active'  => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
     /**
-     * Get the brand that owns the product.
+     * @return BelongsTo<Brand, $this>
      */
     public function brand(): BelongsTo
     {

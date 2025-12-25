@@ -6,7 +6,6 @@ namespace App\Modules\License\Models;
 
 use App\Modules\License\Enums\LicenseStatus;
 use App\Modules\Shared\Core\Traits\HasUlid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -27,7 +26,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class License extends Model
 {
-    use HasFactory;
     use HasUlid;
     use SoftDeletes;
 
@@ -36,11 +34,6 @@ class License extends Model
      */
     protected $table = 'licenses';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'license_key_id',
         'product_id',
@@ -55,18 +48,17 @@ class License extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'license_key_id' => 'integer',
-        'status' => LicenseStatus::class,
-        'expires_at' => 'datetime',
+        'license_key_id'  => 'integer',
+        'status'          => LicenseStatus::class,
+        'expires_at'      => 'datetime',
         'max_activations' => 'integer',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
+        'created_at'      => 'datetime',
+        'updated_at'      => 'datetime',
+        'deleted_at'      => 'datetime',
     ];
 
     /**
-     * Get the license key that owns the license.
-     * Same module relationship - use Laravel relationship
+     * @return BelongsTo<LicenseKey, $this>
      */
     public function licenseKey(): BelongsTo
     {
@@ -74,8 +66,7 @@ class License extends Model
     }
 
     /**
-     * Get the activations for the license.
-     * Same module relationship - use Laravel relationship
+     * @return HasMany<LicenseActivation, $this>
      */
     public function activations(): HasMany
     {
@@ -83,7 +74,7 @@ class License extends Model
     }
 
     /**
-     * Get active activations only (not deactivated).
+     * @return HasMany<LicenseActivation, $this>
      */
     public function activeActivations(): HasMany
     {
@@ -144,6 +135,7 @@ class License extends Model
         }
 
         $activeCount = $this->activeActivations()->count();
-        return max(0, $this->max_activations - $activeCount);
+
+        return \max(0, $this->max_activations - $activeCount);
     }
 }

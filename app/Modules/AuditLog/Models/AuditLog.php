@@ -35,11 +35,6 @@ class AuditLog extends Model
      */
     public $timestamps = false;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'auditable_type',
         'auditable_id',
@@ -57,7 +52,7 @@ class AuditLog extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'metadata' => 'array',
+        'metadata'   => 'array',
         'created_at' => 'datetime',
     ];
 
@@ -69,19 +64,14 @@ class AuditLog extends Model
         parent::boot();
 
         static::creating(function (AuditLog $auditLog): void {
-            if ($auditLog->created_at === null) {
-                $auditLog->created_at = now();
-            }
-
-            if ($auditLog->ip_address === null && request()) {
-                $auditLog->ip_address = request()->ip();
-            }
+            $auditLog->ip_address = request()->ip();
         });
     }
 
     /**
-     * Get the parent auditable model (polymorphic).
-     * Note: We're using ULID for cross-module polymorphic relations
+     * Get the auditable model that this audit log belongs to.
+     *
+     * @return MorphTo<Model, $this>
      */
     public function auditable(): MorphTo
     {
