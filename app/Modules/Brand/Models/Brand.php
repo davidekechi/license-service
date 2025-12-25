@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Brand\Models;
 
 use App\Modules\Shared\Core\Traits\HasUlid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -22,6 +23,8 @@ use Illuminate\Support\Str;
  */
 class Brand extends Model
 {
+    /** @use HasFactory<\Database\Factories\BrandFactory> */
+    use HasFactory;
     use HasUlid;
     use SoftDeletes;
 
@@ -73,5 +76,13 @@ class Brand extends Model
     public function isActive(): bool
     {
         return $this->is_active;
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): \Database\Factories\BrandFactory
+    {
+        return \Database\Factories\BrandFactory::new();
     }
 }

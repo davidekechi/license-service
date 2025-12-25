@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\License\Models;
 
 use App\Modules\Shared\Core\Traits\HasUlid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,6 +21,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class LicenseKey extends Model
 {
+    /** @use HasFactory<\Database\Factories\LicenseKeyFactory> */
+    use HasFactory;
     use HasUlid;
     use SoftDeletes;
 
@@ -58,5 +61,13 @@ class LicenseKey extends Model
     public function activeLicenses(): HasMany
     {
         return $this->licenses()->where('status', 'valid');
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): \Database\Factories\LicenseKeyFactory
+    {
+        return \Database\Factories\LicenseKeyFactory::new();
     }
 }

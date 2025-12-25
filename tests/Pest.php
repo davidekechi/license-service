@@ -8,11 +8,18 @@ uses(TestCase::class)->in('Feature', 'Unit');
 
 // Custom expectations
 expect()->extend('toBeModel', function (string $class) {
-    return $this->toBeInstanceOf($class);
+    /** @var \Pest\Expectation $expectation */
+    $expectation = $this; // @phpstan-ignore-line
+
+    return $expectation->toBeInstanceOf($class);
 });
 
 expect()->extend('toHaveUlid', function () {
-    return $this->value->public_id !== null
-        && is_string($this->value->public_id)
-        && strlen($this->value->public_id) === 26;
+    /** @var \Pest\Expectation $expectation */
+    $expectation = $this; // @phpstan-ignore-line
+    $value       = $expectation->value;
+
+    return $value->public_id !== null
+        && \is_string($value->public_id)
+        && \strlen($value->public_id) === 26;
 });
