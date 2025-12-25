@@ -20,6 +20,7 @@ return new class () extends Migration {
             $table->string('api_key', 128)->unique();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
             // Indexes
             $table->index('slug');

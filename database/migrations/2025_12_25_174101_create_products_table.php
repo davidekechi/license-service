@@ -21,6 +21,7 @@ return new class () extends Migration {
             $table->integer('max_seats')->default(5);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
             // Indexes
             $table->index('brand_id');
