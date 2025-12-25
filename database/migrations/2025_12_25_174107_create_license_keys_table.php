@@ -19,6 +19,7 @@ return new class () extends Migration {
             $table->ulid('brand_id'); // Cross-module: use ULID
             $table->string('customer_email');
             $table->timestamps();
+            $table->softDeletes();
 
             // Indexes
             $table->index('key');

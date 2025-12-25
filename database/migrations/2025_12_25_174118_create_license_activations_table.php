@@ -23,6 +23,7 @@ return new class () extends Migration {
             $table->timestamp('last_checked_at')->nullable();
             $table->timestamp('deactivated_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             // Indexes
             $table->index('license_id');
