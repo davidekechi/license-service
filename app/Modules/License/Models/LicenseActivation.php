@@ -6,6 +6,7 @@ namespace App\Modules\License\Models;
 
 use App\Modules\License\Enums\InstanceType;
 use App\Modules\Shared\Core\Traits\HasUlid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -26,6 +27,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class LicenseActivation extends Model
 {
+    /** @use HasFactory<\Database\Factories\LicenseActivationFactory> */
+    use HasFactory;
     use HasUlid;
     use SoftDeletes;
 
@@ -106,5 +109,13 @@ class LicenseActivation extends Model
         $this->last_checked_at = now();
 
         return $this->save();
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): \Database\Factories\LicenseActivationFactory
+    {
+        return \Database\Factories\LicenseActivationFactory::new();
     }
 }

@@ -20,3 +20,9 @@ parameters:
     # Laravel-specific helpers (optional)
     bootstrapFiles:
         - bootstrap/app.php
+
+    # Ignore Pest internal class warnings and custom expectations (false positives)
+    ignoreErrors:
+        - '#Call to method .* of internal class Pest\\(Mixins|PendingCalls)\\.* from outside its root namespace Pest\.#'
+        - '#Call to an undefined method Pest\\Expectation(<.*>)?::toBeModel\(\)\.#'
+        - '#Call to an undefined method Pest\\Expectation(<.*>)?::toHaveUlid\(\)\.#'
