@@ -1,0 +1,30 @@
+name: Code Quality Checks
+
+on:
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  phpstan-php-cs-fixer:
+    name: Run PHPStan and PHP CS Fixer
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          tools: phpstan, php-cs-fixer  
+          extensions: mbstring, pdo, pdo_mysql
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse
+
+      - name: Run PHP CS Fixer (dry-run)
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff

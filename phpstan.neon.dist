@@ -1,0 +1,22 @@
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    level: 6
+    paths:
+        - app
+        - database
+        - routes
+        - tests
+
+    excludePaths:
+        - vendor
+
+    # checkMissingIterableValueType: false
+    # checkGenericClassInNonGenericObjectType: false
+    inferPrivatePropertyTypeFromConstructor: true
+
+    # Laravel-specific helpers (optional)
+    bootstrapFiles:
+        - bootstrap/app.php
