@@ -17,7 +17,7 @@ return new class () extends Migration {
             $table->ulid('public_id')->unique();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('api_key', 128)->unique();
+            $table->string('api_key')->unique();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();

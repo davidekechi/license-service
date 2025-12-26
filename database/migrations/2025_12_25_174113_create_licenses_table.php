@@ -34,9 +34,6 @@ return new class () extends Migration {
                   ->references('public_id')
                   ->on('products')
                   ->onDelete('cascade');
-
-            // Unique constraint: one license per product per license key
-            $table->unique(['license_key_id', 'product_id']);
         });
     }
 

@@ -78,5 +78,5 @@ test('license key can filter active licenses', function () {
         'max_activations' => 5,
     ]);
 
-    expect($licenseKey->activeLicenses())->toHaveCount(1);
+    expect($licenseKey->activeLicenses()->get())->toHaveCount(1);
 });
