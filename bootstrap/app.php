@@ -1,5 +1,7 @@
 <?php
 
+use App\Modules\Shared\Middleware\AuthenticateBrand;
+use App\Modules\Shared\Middleware\ValidateLicenseKey;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,7 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            //
+            'auth.brand' => AuthenticateBrand::class,
+            'validate.license.key' => ValidateLicenseKey::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
