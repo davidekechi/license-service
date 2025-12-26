@@ -9,6 +9,7 @@ use App\Modules\License\Contracts\LicenseKeyRepositoryInterface;
 use App\Modules\License\Contracts\LicenseRepositoryInterface;
 use App\Modules\License\Enums\LicenseStatus;
 use App\Modules\License\Models\LicenseKey;
+use App\Modules\Shared\Events\LicenseProvisioned;
 use Illuminate\Support\Facades\DB;
 
 class ProvisionLicenseService
@@ -49,7 +50,20 @@ class ProvisionLicenseService
             }
 
             // Reload with relationships
-            return $this->licenseKeyRepository->findById($licenseKey->id) ?? $licenseKey;
+            $licenseKey = $this->licenseKeyRepository->findById($licenseKey->id) ?? $licenseKey;
+
+            // Fire event for audit logging
+            event(new LicenseProvisioned(
+                licenseKey: $licenseKey,
+                brandPublicId: $brand->public_id,
+                metadata: [
+                    'products_count' => \count($products),
+                    'product_ids'    => $productPublicIds,
+                    'is_new_key'     => $existingLicenseKey === null,
+                ]
+            ));
+
+            return $licenseKey;
         });
     }
 
