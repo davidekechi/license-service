@@ -31,7 +31,7 @@ class ProductFactory extends Factory
             'brand_id'  => Brand::factory(),
             'name'      => $this->faker->words(2, true),
             'slug'      => $this->faker->unique()->slug(),
-            'max_seats' => 5,
+            'max_seats' => fake()->randomElement([1, 3, 5, 10]),
             'is_active' => true,
         ];
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\License\Models;
 
 use App\Modules\Shared\Core\Traits\HasUlid;
+use Database\Factories\LicenseKeyFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -66,8 +67,8 @@ class LicenseKey extends Model
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory(): \Database\Factories\LicenseKeyFactory
+    protected static function newFactory(): LicenseKeyFactory
     {
-        return \Database\Factories\LicenseKeyFactory::new();
+        return LicenseKeyFactory::new();
     }
 }
