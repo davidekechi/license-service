@@ -12,7 +12,7 @@ class BrandSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run(bool $silent = false): void
     {
         $brands = [
             [
@@ -45,6 +45,8 @@ class BrandSeeder extends Seeder
             Brand::create($brandData);
         }
 
-        $this->command->info('✓ Created ' . \count($brands) . ' brands');
+        if (!$silent) {
+            $this->command->info('✓ Created ' . \count($brands) . ' brands');
+        }
     }
 }
