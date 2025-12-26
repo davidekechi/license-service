@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Brand\Models;
 
 use App\Modules\Shared\Core\Traits\HasUlid;
+use Database\Factories\BrandFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -81,8 +82,8 @@ class Brand extends Model
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory(): \Database\Factories\BrandFactory
+    protected static function newFactory(): BrandFactory
     {
-        return \Database\Factories\BrandFactory::new();
+        return BrandFactory::new();
     }
 }

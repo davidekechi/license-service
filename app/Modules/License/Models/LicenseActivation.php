@@ -6,6 +6,7 @@ namespace App\Modules\License\Models;
 
 use App\Modules\License\Enums\InstanceType;
 use App\Modules\Shared\Core\Traits\HasUlid;
+use Database\Factories\LicenseActivationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -114,8 +115,8 @@ class LicenseActivation extends Model
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory(): \Database\Factories\LicenseActivationFactory
+    protected static function newFactory(): LicenseActivationFactory
     {
-        return \Database\Factories\LicenseActivationFactory::new();
+        return LicenseActivationFactory::new();
     }
 }

@@ -32,10 +32,13 @@ class LicenseActivationFactory extends Factory
             'license_id'          => License::factory(),
             'instance_identifier' => $this->faker->url(),
             'instance_type'       => InstanceType::SITE,
-            'instance_meta'       => null,
-            'activated_at'        => now(),
-            'last_checked_at'     => now(),
-            'deactivated_at'      => null,
+            'instance_meta'       => [
+                'ip'         => fake()->ipv4(),
+                'user_agent' => fake()->userAgent(),
+            ],
+            'activated_at'    => now(),
+            'last_checked_at' => now(),
+            'deactivated_at'  => null,
         ];
     }
 
@@ -66,6 +69,22 @@ class LicenseActivationFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'instance_type' => $type,
+        ]);
+    }
+
+    public function device(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'instance_type'       => InstanceType::DEVICE,
+            'instance_identifier' => fake()->uuid(),
+        ]);
+    }
+
+    public function server(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'instance_type'       => InstanceType::SERVER,
+            'instance_identifier' => fake()->ipv4(),
         ]);
     }
 }
