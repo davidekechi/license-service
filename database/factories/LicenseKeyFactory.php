@@ -29,7 +29,7 @@ class LicenseKeyFactory extends Factory
     {
         return [
             'key'            => $this->generateLicenseKey(),
-            'brand_id'       => Brand::factory(),
+            'brand_id'       => Brand::factory()->create()->public_id,
             'customer_email' => $this->faker->unique()->safeEmail(),
         ];
     }
