@@ -9,16 +9,30 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class LicenseResource extends JsonResource
 {
+    /** @var array<string, mixed>|null */
+    private ?array $additionalData = null;
+
+    /**
+     * @param mixed $resource
+     * @param array<string, mixed>|null $additionalData
+     */
+    public function __construct($resource, ?array $additionalData = null)
+    {
+        parent::__construct($resource);
+        $this->additionalData = $additionalData;
+    }
+
     /**
      * Transform the resource into an array.
      *
+     * @param Request $request
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {
         return [
             'public_id'       => $this->resource->public_id,
-            'product_id'      => $this->resource->product_id,
+            'product'         => $this->additionalData['product'] ?? null,
             'status'          => $this->resource->status->value,
             'is_valid'        => $this->resource->isValid(),
             'is_expired'      => $this->resource->isExpired(),
