@@ -26,3 +26,7 @@ parameters:
         - '#Call to method .* of internal class Pest\\(Mixins|PendingCalls)\\.* from outside its root namespace Pest\.#'
         - '#Call to an undefined method Pest\\Expectation(<.*>)?::toBeModel\(\)\.#'
         - '#Call to an undefined method Pest\\Expectation(<.*>)?::toHaveUlid\(\)\.#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$repository\.#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$service\.#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$generator\.#'
+        - '#Parameter \#1 \$licenseKeyRepository of class .* constructor expects .*, Mockery\\MockInterface given\.#'

@@ -30,8 +30,8 @@ class LicenseFactory extends Factory
     public function definition(): array
     {
         return [
-            'license_key_id'  => LicenseKey::factory(),
-            'product_id'      => Product::factory(),
+            'license_key_id'  => LicenseKey::factory()->create()->id,
+            'product_id'      => Product::factory()->create()->public_id,
             'status'          => LicenseStatus::VALID,
             'expires_at'      => now()->addYear(),
             'max_activations' => 5,

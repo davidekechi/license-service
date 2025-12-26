@@ -28,7 +28,7 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'brand_id'  => Brand::factory(),
+            'brand_id'  => Brand::factory()->create()->id,
             'name'      => $this->faker->words(2, true),
             'slug'      => $this->faker->unique()->slug(),
             'max_seats' => fake()->randomElement([1, 3, 5, 10]),

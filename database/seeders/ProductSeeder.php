@@ -13,7 +13,7 @@ class ProductSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run(bool $silent = false): void
     {
         // Get brands
         $rankmath = Brand::where('slug', 'rankmath')->first();
@@ -22,7 +22,9 @@ class ProductSeeder extends Seeder
         $backwpup = Brand::where('slug', 'backwpup')->first();
 
         if ($rankmath === null || $wpRocket === null || $imagify === null || $backwpup === null) {
-            $this->command->error('Brands not found. Run BrandSeeder first.');
+            if (!$silent) {
+                $this->command->error('Brands not found. Run BrandSeeder first.');
+            }
 
             return;
         }
@@ -104,6 +106,8 @@ class ProductSeeder extends Seeder
             Product::create($productData);
         }
 
-        $this->command->info('✓ Created ' . \count($products) . ' products');
+        if (!$silent) {
+            $this->command->info('✓ Created ' . \count($products) . ' products');
+        }
     }
 }

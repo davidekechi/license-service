@@ -6,6 +6,7 @@ namespace App\Modules\AuditLog\Models;
 
 use App\Modules\AuditLog\Enums\AuditEventType;
 use App\Modules\Shared\Core\Traits\HasUlid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -23,7 +24,17 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class AuditLog extends Model
 {
+    /** @use HasFactory<\Database\Factories\AuditLogFactory> */
+    use HasFactory;
     use HasUlid;
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): \Database\Factories\AuditLogFactory
+    {
+        return \Database\Factories\AuditLogFactory::new();
+    }
 
     /**
      * The table associated with the model.
@@ -65,6 +76,7 @@ class AuditLog extends Model
 
         static::creating(function (AuditLog $auditLog): void {
             $auditLog->ip_address = request()->ip();
+            $auditLog->created_at = $auditLog->created_at ?? now();
         });
     }
 
