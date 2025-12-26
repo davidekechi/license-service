@@ -6,10 +6,9 @@ namespace App\Modules\AuditLog\Listeners;
 
 use App\Modules\AuditLog\Contracts\AuditLogRepositoryInterface;
 use App\Modules\Shared\Events\LicenseProvisioned;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class CreateAuditLogListener implements ShouldQueue
+class CreateAuditLogListener
 {
     /**
      * Create the event listener.

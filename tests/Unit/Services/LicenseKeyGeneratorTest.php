@@ -67,5 +67,5 @@ test('throws exception when unable to generate unique key', function () {
 
     $generator = new LicenseKeyGenerator($mockRepo);
 
-    $generator->generate($brand);
+    $generator->generate($brand->slug);
 })->throws(RuntimeException::class, 'Failed to generate unique license key');

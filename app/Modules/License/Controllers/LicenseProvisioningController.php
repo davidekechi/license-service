@@ -6,12 +6,12 @@ namespace App\Modules\License\Controllers;
 
 use App\Modules\License\DTOs\ProvisionLicenseDTO;
 use App\Modules\License\Requests\ProvisionLicenseRequest;
-use App\Modules\License\Resources\LicenseKeyResource;
+use App\Modules\License\Resources\LicenseResource;
+use App\Modules\License\Services\BrandService;
 use App\Modules\License\Services\ProvisionLicenseService;
 use App\Modules\Shared\Support\Exceptions\InvalidProductException;
 use App\Modules\Shared\Support\Helpers\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
@@ -21,7 +21,8 @@ class LicenseProvisioningController
      * Create a new controller instance.
      */
     public function __construct(
-        private readonly ProvisionLicenseService $provisionLicenseService
+        private readonly ProvisionLicenseService $provisionLicenseService,
+        private readonly BrandService $brandService
     ) {
     }
 
@@ -33,6 +34,8 @@ class LicenseProvisioningController
      */
     public function provision(ProvisionLicenseRequest $request): JsonResponse
     {
+        $brandPublicId = null;
+
         try {
             // Get authenticated brand from middleware
             $brand = $request->get('authenticated_brand');
@@ -41,23 +44,50 @@ class LicenseProvisioningController
                 return ApiResponse::unauthorized('Brand authentication required');
             }
 
+            $brandPublicId = $brand->public_id;
+
             // Convert request to DTO
             $dto = ProvisionLicenseDTO::fromRequest($request);
 
-            // Call service
+            // Call service (enrichment happens inside service)
             $licenseKey = $this->provisionLicenseService->provision(
-                brand: $brand,
+                brandPublicId: $brandPublicId,
                 customerEmail: $dto->customerEmail,
-                products: \array_map(
-                    fn ($product) => $product->toArray(),
-                    $dto->products
-                ),
+                products: $dto->products,
                 existingLicenseKey: $dto->licenseKey
             );
 
+            // Load licenses with relationships
+            $licenseKey->load('licenses');
+
+            // Get products for each license and prepare additional data
+            $licensesWithProducts = $licenseKey->licenses->map(function ($license) {
+                $product = $this->brandService->findProductByPublicId($license->product_id);
+
+                $additionalData = [
+                    'product' => $product ? [
+                        'public_id' => $product->public_id,
+                        'name'      => $product->name,
+                        'slug'      => $product->slug,
+                        'max_seats' => $product->max_seats,
+                        'is_active' => $product->is_active,
+                    ] : null,
+                ];
+
+                return new LicenseResource($license, $additionalData);
+            })->toArray();
+
+            // Build response manually to include licenses with product data
+            $responseData = [
+                'license_key'    => $licenseKey->key,
+                'customer_email' => $licenseKey->customer_email,
+                'licenses'       => $licensesWithProducts,
+                'created_at'     => $licenseKey->created_at->toIso8601String(),
+            ];
+
             // Return resource
             return ApiResponse::success(
-                data: new LicenseKeyResource($licenseKey->load('licenses')),
+                data: $responseData,
                 message: 'License provisioned successfully',
                 statusCode: 201
             );
@@ -82,11 +112,11 @@ class LicenseProvisioningController
             Log::error('Failed to provision license', [
                 'error'    => $e->getMessage(),
                 'trace'    => $e->getTraceAsString(),
-                'brand_id' => $brand->public_id ?? 'unknown',
+                'brand_id' => $brandPublicId ?? 'unknown',
             ]);
 
             return ApiResponse::serverError(
-                message: 'An unexpected error occurred while provisioning license'
+                message: 'An unexpected error occurred while provisioning license: '. $e->getMessage()
             );
         }
     }

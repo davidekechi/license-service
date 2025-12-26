@@ -7,6 +7,7 @@ namespace App\Modules\Shared\Events;
 use App\Modules\License\Models\LicenseKey;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class LicenseProvisioned
 {
@@ -72,6 +73,8 @@ class LicenseProvisioned
      */
     public function getMetadata(): array
     {
+        Log::info('event raised');
+
         return \array_merge($this->metadata, [
             'license_count'  => $this->licenseKey->licenses()->count(),
             'customer_email' => $this->licenseKey->customer_email,
