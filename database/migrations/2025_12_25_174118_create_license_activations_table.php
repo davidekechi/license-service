@@ -30,9 +30,6 @@ return new class () extends Migration {
             $table->index('instance_identifier');
             $table->index('deactivated_at');
             $table->index(['license_id', 'deactivated_at']); // For counting active seats
-
-            // Unique constraint: one activation per instance per license
-            $table->unique(['license_id', 'instance_identifier']);
         });
     }
 

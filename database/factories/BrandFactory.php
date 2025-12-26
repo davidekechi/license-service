@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Modules\Brand\Models\Brand;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Brand>
@@ -26,10 +27,12 @@ class BrandFactory extends Factory
      */
     public function definition(): array
     {
-        $slug = $this->faker->unique()->slug();
+        $name = $this->faker->company();
+
+        $slug = Str::slug($name);
 
         return [
-            'name'      => $this->faker->company(),
+            'name'      => $name,
             'slug'      => $slug,
             'api_key'   => Brand::generateApiKey($slug),
             'is_active' => true,
