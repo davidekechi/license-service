@@ -6,6 +6,8 @@ namespace App\Modules\License\Models;
 
 use App\Modules\License\Enums\LicenseStatus;
 use App\Modules\Shared\Core\Traits\HasUlid;
+use Database\Factories\LicenseFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,6 +28,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class License extends Model
 {
+    /** @use HasFactory<\Database\Factories\LicenseFactory> */
+    use HasFactory;
     use HasUlid;
     use SoftDeletes;
 
@@ -137,5 +141,13 @@ class License extends Model
         $activeCount = $this->activeActivations()->count();
 
         return \max(0, $this->max_activations - $activeCount);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): LicenseFactory
+    {
+        return LicenseFactory::new();
     }
 }
