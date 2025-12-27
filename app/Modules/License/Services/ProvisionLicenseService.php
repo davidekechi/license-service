@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Modules\License\Services;
 
-use App\Modules\Brand\Models\Brand;
 use App\Modules\License\Contracts\LicenseKeyRepositoryInterface;
 use App\Modules\License\Contracts\LicenseRepositoryInterface;
+use App\Modules\License\DTOs\ProductLicenseDTO;
 use App\Modules\License\Enums\LicenseStatus;
 use App\Modules\License\Models\LicenseKey;
+use App\Modules\Shared\Events\LicenseProvisioned;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProvisionLicenseService
 {
@@ -27,37 +29,99 @@ class ProvisionLicenseService
     /**
      * Provision a new license or add to existing license key.
      *
-     * @param array<int, array{product_public_id: string, expires_at: string|null, max_activations: int}> $products
+     * @param array<int, ProductLicenseDTO|array<string, mixed>> $products
      */
     public function provision(
-        Brand $brand,
+        string $brandPublicId,
         string $customerEmail,
         array $products,
         ?string $existingLicenseKey = null
     ): LicenseKey {
-        return DB::transaction(function () use ($brand, $customerEmail, $products, $existingLicenseKey) {
+        return DB::transaction(function () use ($brandPublicId, $customerEmail, $products, $existingLicenseKey) {
+            // Get brand to get slug for license key generation
+            $brand = $this->brandService->findBrandByPublicId($brandPublicId);
+
+            if ($brand === null) {
+                throw new \InvalidArgumentException('Brand not found: ' . $brandPublicId);
+            }
+
+            // Convert arrays to DTOs if needed
+            $productDtos = \array_map(
+                fn ($product) => $product instanceof ProductLicenseDTO ? $product : ProductLicenseDTO::fromArray($product),
+                $products
+            );
+
+            // Enrich products with max_seats from product if max_activations not provided
+            $enrichedProducts = $this->enrichProductsWithMaxSeats($productDtos);
+
             // Get or create license key
-            $licenseKey = $this->getOrCreateLicenseKey($brand, $customerEmail, $existingLicenseKey);
+            $licenseKey = $this->getOrCreateLicenseKey($brandPublicId, $brand->slug, $customerEmail, $existingLicenseKey);
 
             // Validate products belong to brand
-            $productPublicIds = \array_column($products, 'product_public_id');
-            $this->validateProductsBelongToBrand($productPublicIds, $brand->public_id);
+            $productPublicIds = \array_map(fn (ProductLicenseDTO $product) => $product->productPublicId, $enrichedProducts);
+            $this->validateProductsBelongToBrand($productPublicIds, $brandPublicId);
 
             // Create licenses for each product
-            foreach ($products as $productData) {
-                $this->createLicense($licenseKey, $productData);
+            foreach ($enrichedProducts as $productDto) {
+                $this->createLicense($licenseKey, $productDto->toArray());
             }
 
             // Reload with relationships
-            return $this->licenseKeyRepository->findById($licenseKey->id) ?? $licenseKey;
+            $licenseKey = $this->licenseKeyRepository->findById($licenseKey->id) ?? $licenseKey;
+
+            // Fire event for audit logging
+            Log::info('event about to fire');
+            event(new LicenseProvisioned(
+                licenseKey: $licenseKey,
+                brandPublicId: $brandPublicId,
+                metadata: [
+                    'products_count' => \count($enrichedProducts),
+                    'product_ids'    => $productPublicIds,
+                    'is_new_key'     => $existingLicenseKey === null,
+                ]
+            ));
+
+            Log::info('event finished');
+
+            return $licenseKey;
         });
+    }
+
+    /**
+     * Enrich products with max_seats from product if max_activations not provided.
+     *
+     * @param array<int, ProductLicenseDTO> $products
+     * @return array<int, ProductLicenseDTO>
+     */
+    private function enrichProductsWithMaxSeats(array $products): array
+    {
+        return \array_map(function (ProductLicenseDTO $productDto) {
+            // If max_activations is not provided (null), fetch from product
+            if ($productDto->maxActivations === null) {
+                $product = $this->brandService->findProductByPublicId($productDto->productPublicId);
+
+                if ($product === null) {
+                    throw new \InvalidArgumentException('Product not found: ' . $productDto->productPublicId);
+                }
+
+                // Create new DTO with product's max_seats
+                return new ProductLicenseDTO(
+                    productPublicId: $productDto->productPublicId,
+                    expiresAt: $productDto->expiresAt,
+                    maxActivations: $product->max_seats
+                );
+            }
+
+            return $productDto;
+        }, $products);
     }
 
     /**
      * Get existing license key or create new one.
      */
     private function getOrCreateLicenseKey(
-        Brand $brand,
+        string $brandPublicId,
+        string $brandSlug,
         string $customerEmail,
         ?string $existingKey
     ): LicenseKey {
@@ -69,7 +133,7 @@ class ProvisionLicenseService
             }
 
             // Verify it belongs to the same brand and customer
-            if ($licenseKey->brand_id !== $brand->public_id) {
+            if ($licenseKey->brand_id !== $brandPublicId) {
                 throw new \InvalidArgumentException('License key belongs to different brand');
             }
 
@@ -81,11 +145,11 @@ class ProvisionLicenseService
         }
 
         // Generate new license key
-        $key = $this->licenseKeyGenerator->generate($brand);
+        $key = $this->licenseKeyGenerator->generate($brandSlug);
 
         return $this->licenseKeyRepository->create([
             'key'            => $key,
-            'brand_id'       => $brand->public_id,
+            'brand_id'       => $brandPublicId,
             'customer_email' => $customerEmail,
         ]);
     }

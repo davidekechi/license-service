@@ -15,7 +15,7 @@ beforeEach(function () {
 test('generates unique license key for brand', function () {
     $brand = Brand::factory()->create(['slug' => 'rankmath']);
 
-    $key = $this->generator->generate($brand);
+    $key = $this->generator->generate($brand->slug);
 
     expect($key)->toBeString()
         ->and($key)->toStartWith('RANK-')
@@ -25,7 +25,7 @@ test('generates unique license key for brand', function () {
 test('generated key has correct format', function () {
     $brand = Brand::factory()->create(['slug' => 'wp-rocket']);
 
-    $key = $this->generator->generate($brand);
+    $key = $this->generator->generate($brand->slug);
 
     expect($key)->toMatch('/^WPRO-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/');
 });
@@ -33,8 +33,8 @@ test('generated key has correct format', function () {
 test('generates different keys for multiple calls', function () {
     $brand = Brand::factory()->create(['slug' => 'rankmath']);
 
-    $key1 = $this->generator->generate($brand);
-    $key2 = $this->generator->generate($brand);
+    $key1 = $this->generator->generate($brand->slug);
+    $key2 = $this->generator->generate($brand->slug);
 
     expect($key1)->not->toBe($key2);
 });
@@ -67,5 +67,5 @@ test('throws exception when unable to generate unique key', function () {
 
     $generator = new LicenseKeyGenerator($mockRepo);
 
-    $generator->generate($brand);
+    $generator->generate($brand->slug);
 })->throws(RuntimeException::class, 'Failed to generate unique license key');

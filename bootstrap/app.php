@@ -22,4 +22,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })
+    ->withProviders([
+        \App\Modules\Brand\Providers\BrandServiceProvider::class,
+        \App\Modules\License\Providers\LicenseServiceProvider::class,
+        \App\Modules\AuditLog\Providers\AuditLogServiceProvider::class,
+        \App\Modules\Shared\Providers\EventServiceProvider::class,
+    ])
     ->create();

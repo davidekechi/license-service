@@ -80,4 +80,14 @@ class ApiResponse
     ): JsonResponse {
         return self::error($message, null, $statusCode);
     }
+
+    /**
+     * Forbidden response
+     */
+    public static function serverError(
+        string $message = 'Internal server error',
+        int $statusCode = 500
+    ): JsonResponse {
+        return self::error($message, null, $statusCode);
+    }
 }
