@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 use App\Modules\AuditLog\Models\AuditLog;
 use App\Modules\Brand\Models\Brand;
-use App\Modules\License\Models\License;
-use App\Modules\License\Models\LicenseKey;
 
 beforeEach(function () {
-    $this->brand = Brand::factory()->create(['is_active' => true]);
+    $this->brand   = Brand::factory()->create(['is_active' => true]);
     $this->product = $this->brand->products()->create([
-        'name' => 'Test Product',
-        'slug' => 'test-product',
+        'name'      => 'Test Product',
+        'slug'      => 'test-product',
         'max_seats' => 5,
         'is_active' => true,
     ]);
@@ -22,11 +20,11 @@ test('can provision license with single product', function () {
         'Authorization' => 'Bearer ' . $this->brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $this->product->public_id,
-                'expires_at' => now()->addYear()->toDateString(),
-                'max_activations' => 5,
+                'expires_at'        => now()->addYear()->toDateString(),
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -50,8 +48,8 @@ test('can provision license with single product', function () {
 
 test('can provision license with multiple products', function () {
     $product2 = $this->brand->products()->create([
-        'name' => 'Second Product',
-        'slug' => 'second-product',
+        'name'      => 'Second Product',
+        'slug'      => 'second-product',
         'max_seats' => 3,
         'is_active' => true,
     ]);
@@ -60,16 +58,16 @@ test('can provision license with multiple products', function () {
         'Authorization' => 'Bearer ' . $this->brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $this->product->public_id,
-                'expires_at' => now()->addYear()->toDateString(),
-                'max_activations' => 5,
+                'expires_at'        => now()->addYear()->toDateString(),
+                'max_activations'   => 5,
             ],
             [
                 'product_public_id' => $product2->public_id,
-                'expires_at' => now()->addYear()->toDateString(),
-                'max_activations' => 3,
+                'expires_at'        => now()->addYear()->toDateString(),
+                'max_activations'   => 3,
             ],
         ],
     ]);
@@ -85,10 +83,10 @@ test('can add product to existing license key', function () {
         'Authorization' => 'Bearer ' . $this->brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $this->product->public_id,
-                'max_activations' => 5,
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -97,8 +95,8 @@ test('can add product to existing license key', function () {
 
     // Create second product
     $product2 = $this->brand->products()->create([
-        'name' => 'Second Product',
-        'slug' => 'second-product',
+        'name'      => 'Second Product',
+        'slug'      => 'second-product',
         'max_seats' => 3,
     ]);
 
@@ -107,11 +105,11 @@ test('can add product to existing license key', function () {
         'Authorization' => 'Bearer ' . $this->brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'license_key' => $licenseKey,
-        'products' => [
+        'license_key'    => $licenseKey,
+        'products'       => [
             [
                 'product_public_id' => $product2->public_id,
-                'max_activations' => 3,
+                'max_activations'   => 3,
             ],
         ],
     ]);
@@ -125,10 +123,10 @@ test('can add product to existing license key', function () {
 test('rejects provision without authentication', function () {
     $response = $this->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $this->product->public_id,
-                'max_activations' => 5,
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -141,10 +139,10 @@ test('rejects provision with invalid brand api key', function () {
         'Authorization' => 'Bearer invalid-key',
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $this->product->public_id,
-                'max_activations' => 5,
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -153,10 +151,10 @@ test('rejects provision with invalid brand api key', function () {
 });
 
 test('rejects provision with product from different brand', function () {
-    $otherBrand = Brand::factory()->create();
+    $otherBrand   = Brand::factory()->create();
     $otherProduct = $otherBrand->products()->create([
-        'name' => 'Other Brand Product',
-        'slug' => 'other-product',
+        'name'      => 'Other Brand Product',
+        'slug'      => 'other-product',
         'max_seats' => 5,
     ]);
 
@@ -164,10 +162,10 @@ test('rejects provision with product from different brand', function () {
         'Authorization' => 'Bearer ' . $this->brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $otherProduct->public_id,
-                'max_activations' => 5,
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -185,10 +183,10 @@ test('rejects duplicate product on same license key', function () {
         'Authorization' => 'Bearer ' . $this->brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $this->product->public_id,
-                'max_activations' => 5,
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -200,11 +198,11 @@ test('rejects duplicate product on same license key', function () {
         'Authorization' => 'Bearer ' . $this->brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'license_key' => $licenseKey,
-        'products' => [
+        'license_key'    => $licenseKey,
+        'products'       => [
             [
                 'product_public_id' => $this->product->public_id,
-                'max_activations' => 5,
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -229,10 +227,10 @@ test('validates email format', function () {
         'Authorization' => 'Bearer ' . $this->brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'invalid-email',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $this->product->public_id,
-                'max_activations' => 5,
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -246,7 +244,7 @@ test('validates products array is not empty', function () {
         'Authorization' => 'Bearer ' . $this->brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [],
+        'products'       => [],
     ]);
 
     $response->assertStatus(422)
@@ -258,10 +256,10 @@ test('creates audit log on successful provision', function () {
         'Authorization' => 'Bearer ' . $this->brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $this->product->public_id,
-                'max_activations' => 5,
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -281,10 +279,10 @@ test('provision creates license key with correct format', function () {
         'Authorization' => 'Bearer ' . $this->brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $this->product->public_id,
-                'max_activations' => 5,
+                'max_activations'   => 5,
             ],
         ],
     ]);

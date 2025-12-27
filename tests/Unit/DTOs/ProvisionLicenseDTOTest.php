@@ -11,9 +11,9 @@ test('can create provision license DTO from array', function () {
         'customer_email' => 'test@example.com',
         'products'       => [
             [
-                'product_public_id'    => 'test-product',
-                'expires_at'      => '2025-12-31',
-                'max_activations' => 5,
+                'product_public_id' => 'test-product',
+                'expires_at'        => '2025-12-31',
+                'max_activations'   => 5,
             ],
         ],
         'license_key' => 'TEST-1234-5678-9ABC',
@@ -32,9 +32,9 @@ test('can create provision license DTO from request', function () {
         'customer_email' => 'test@example.com',
         'products'       => [
             [
-                'product_public_id'    => 'test-product',
-                'expires_at'      => '2025-12-31',
-                'max_activations' => 5,
+                'product_public_id' => 'test-product',
+                'expires_at'        => '2025-12-31',
+                'max_activations'   => 5,
             ],
         ],
     ]);

@@ -79,7 +79,7 @@ test('provision license request validates expiration date is in future', functio
         'products'       => [
             [
                 'product_public_id' => 'test-product',
-                'expires_at'   => now()->subDay()->toDateString(),
+                'expires_at'        => now()->subDay()->toDateString(),
             ],
         ],
     ];
