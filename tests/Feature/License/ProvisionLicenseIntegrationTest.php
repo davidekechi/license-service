@@ -9,20 +9,20 @@ use App\Modules\License\Models\LicenseKey;
 test('rankmath scenario: multiple products on single license key', function () {
     // Setup: Create RankMath brand and products
     $rankMath = Brand::factory()->create([
-        'name' => 'RankMath',
-        'slug' => 'rankmath',
+        'name'      => 'RankMath',
+        'slug'      => 'rankmath',
         'is_active' => true,
     ]);
 
     $rankMathPro = $rankMath->products()->create([
-        'name' => 'RankMath Pro',
-        'slug' => 'rankmath-pro',
+        'name'      => 'RankMath Pro',
+        'slug'      => 'rankmath-pro',
         'max_seats' => 5,
     ]);
 
     $contentAI = $rankMath->products()->create([
-        'name' => 'Content AI',
-        'slug' => 'content-ai',
+        'name'      => 'Content AI',
+        'slug'      => 'content-ai',
         'max_seats' => 5,
     ]);
 
@@ -31,11 +31,11 @@ test('rankmath scenario: multiple products on single license key', function () {
         'Authorization' => 'Bearer ' . $rankMath->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'john@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $rankMathPro->public_id,
-                'expires_at' => now()->addYear()->toDateString(),
-                'max_activations' => 5,
+                'expires_at'        => now()->addYear()->toDateString(),
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -50,12 +50,12 @@ test('rankmath scenario: multiple products on single license key', function () {
         'Authorization' => 'Bearer ' . $rankMath->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'john@example.com',
-        'license_key' => $licenseKey1, // Add to existing key
-        'products' => [
+        'license_key'    => $licenseKey1, // Add to existing key
+        'products'       => [
             [
                 'product_public_id' => $contentAI->public_id,
-                'expires_at' => now()->addYear()->toDateString(),
-                'max_activations' => 5,
+                'expires_at'        => now()->addYear()->toDateString(),
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -85,14 +85,14 @@ test('multi-brand scenario: different brands get different license keys', functi
     ]);
 
     $rankMathProduct = $rankMath->products()->create([
-        'name' => 'RankMath Pro',
-        'slug' => 'rankmath-pro',
+        'name'      => 'RankMath Pro',
+        'slug'      => 'rankmath-pro',
         'max_seats' => 5,
     ]);
 
     $wpRocketProduct = $wpRocket->products()->create([
-        'name' => 'WP Rocket',
-        'slug' => 'wp-rocket',
+        'name'      => 'WP Rocket',
+        'slug'      => 'wp-rocket',
         'max_seats' => 3,
     ]);
 
@@ -101,10 +101,10 @@ test('multi-brand scenario: different brands get different license keys', functi
         'Authorization' => 'Bearer ' . $rankMath->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'john@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $rankMathProduct->public_id,
-                'max_activations' => 5,
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -116,10 +116,10 @@ test('multi-brand scenario: different brands get different license keys', functi
         'Authorization' => 'Bearer ' . $wpRocket->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'john@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $wpRocketProduct->public_id,
-                'max_activations' => 3,
+                'max_activations'   => 3,
             ],
         ],
     ]);
@@ -136,10 +136,10 @@ test('multi-brand scenario: different brands get different license keys', functi
 });
 
 test('complete provision workflow creates all audit logs', function () {
-    $brand = Brand::factory()->create(['is_active' => true]);
+    $brand   = Brand::factory()->create(['is_active' => true]);
     $product = $brand->products()->create([
-        'name' => 'Test Product',
-        'slug' => 'test-product',
+        'name'      => 'Test Product',
+        'slug'      => 'test-product',
         'max_seats' => 5,
     ]);
 
@@ -148,10 +148,10 @@ test('complete provision workflow creates all audit logs', function () {
         'Authorization' => 'Bearer ' . $brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
                 'product_public_id' => $product->public_id,
-                'max_activations' => 5,
+                'max_activations'   => 5,
             ],
         ],
     ]);
