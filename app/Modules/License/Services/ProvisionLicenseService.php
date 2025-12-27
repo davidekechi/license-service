@@ -11,7 +11,6 @@ use App\Modules\License\Enums\LicenseStatus;
 use App\Modules\License\Models\LicenseKey;
 use App\Modules\Shared\Events\LicenseProvisioned;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class ProvisionLicenseService
 {
@@ -70,7 +69,6 @@ class ProvisionLicenseService
             $licenseKey = $this->licenseKeyRepository->findById($licenseKey->id) ?? $licenseKey;
 
             // Fire event for audit logging
-            Log::info('event about to fire');
             event(new LicenseProvisioned(
                 licenseKey: $licenseKey,
                 brandPublicId: $brandPublicId,
@@ -80,8 +78,6 @@ class ProvisionLicenseService
                     'is_new_key'     => $existingLicenseKey === null,
                 ]
             ));
-
-            Log::info('event finished');
 
             return $licenseKey;
         });

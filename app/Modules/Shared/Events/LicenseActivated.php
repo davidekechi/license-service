@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Modules\Shared\Events;
 
-use App\Modules\License\Models\LicenseKey;
+use App\Modules\License\Models\LicenseActivation;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class LicenseProvisioned
+class LicenseActivated
 {
     use Dispatchable;
     use SerializesModels;
@@ -19,8 +19,8 @@ class LicenseProvisioned
      * @param array<string, mixed> $metadata
      */
     public function __construct(
-        public readonly LicenseKey $licenseKey,
-        public readonly string $brandPublicId,
+        public readonly LicenseActivation $activation,
+        public readonly string $licenseKeyString,
         public readonly array $metadata = []
     ) {
     }
@@ -30,7 +30,7 @@ class LicenseProvisioned
      */
     public function getAuditableType(): string
     {
-        return LicenseKey::class;
+        return LicenseActivation::class;
     }
 
     /**
@@ -38,7 +38,7 @@ class LicenseProvisioned
      */
     public function getAuditableId(): string
     {
-        return $this->licenseKey->public_id;
+        return $this->activation->public_id;
     }
 
     /**
@@ -46,7 +46,7 @@ class LicenseProvisioned
      */
     public function getEventType(): string
     {
-        return 'license_provisioned';
+        return 'license_activated';
     }
 
     /**
@@ -54,7 +54,7 @@ class LicenseProvisioned
      */
     public function getActorType(): string
     {
-        return 'brand';
+        return 'product';
     }
 
     /**
@@ -62,7 +62,7 @@ class LicenseProvisioned
      */
     public function getActorIdentifier(): string
     {
-        return $this->brandPublicId;
+        return $this->activation->license->product_id;
     }
 
     /**
@@ -73,8 +73,10 @@ class LicenseProvisioned
     public function getMetadata(): array
     {
         return \array_merge($this->metadata, [
-            'license_count'  => $this->licenseKey->licenses()->count(),
-            'customer_email' => $this->licenseKey->customer_email,
+            'license_key'         => $this->licenseKeyString,
+            'instance_identifier' => $this->activation->instance_identifier,
+            'instance_type'       => $this->activation->instance_type->value,
+            'license_id'          => $this->activation->license->public_id,
         ]);
     }
 }
