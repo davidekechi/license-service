@@ -30,6 +30,14 @@ class BrandService
     }
 
     /**
+     * Find brand by slug.
+     */
+    public function findBrandBySlug(string $slug): ?Brand
+    {
+        return $this->brandLookupService->findBrandBySlug($slug);
+    }
+
+    /**
      * Find product by public ID.
      */
     public function findProductByPublicId(string $publicId): ?Product

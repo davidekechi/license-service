@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Modules\License\Controllers\LicenseProvisioningController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,5 +26,11 @@ Route::prefix('v1')->group(function () {
             'version'     => '1.0.0',
             'environment' => app()->environment()
         ]);
+    });
+
+    Route::prefix('brands/licenses')->middleware(['auth.brand'])->group(function () {
+        // US1: Provision License
+        Route::post('/provision', [LicenseProvisioningController::class, 'provision'])
+            ->name('licenses.provision');
     });
 });

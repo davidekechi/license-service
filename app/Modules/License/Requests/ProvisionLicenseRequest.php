@@ -24,12 +24,12 @@ class ProvisionLicenseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_email'             => ['required', 'email', 'max:255'],
-            'products'                   => ['required', 'array', 'min:1'],
-            'products.*.product_slug'    => ['required', 'string'],
-            'products.*.expires_at'      => ['nullable', 'date', 'after:today'],
-            'products.*.max_activations' => ['nullable', 'integer', 'min:1'],
-            'license_key'                => ['nullable', 'string', 'size:19'], // Format: XXXX-XXXX-XXXX-XXXX
+            'customer_email'               => ['required', 'email', 'max:255'],
+            'products'                     => ['required', 'array', 'min:1'],
+            'products.*.product_public_id' => ['required', 'string', 'exists:products,public_id'],
+            'products.*.expires_at'        => ['nullable', 'date', 'after:today'],
+            'products.*.max_activations'   => ['nullable', 'integer', 'min:1'],
+            'license_key'                  => ['nullable', 'string', 'size:19'], // Format: XXXX-XXXX-XXXX-XXXX
         ];
     }
 

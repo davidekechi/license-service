@@ -7,15 +7,20 @@ use App\Modules\License\Requests\ProvisionLicenseRequest;
 use Illuminate\Support\Facades\Validator;
 
 test('provision license request validates successfully with valid data', function () {
-    $brand = Brand::factory()->create();
+    $brand   = Brand::factory()->create();
+    $product = $brand->products()->create([
+        'name'      => 'Test Product',
+        'slug'      => 'test-product',
+        'max_seats' => 5,
+    ]);
 
     $data = [
         'customer_email' => 'test@example.com',
         'products'       => [
             [
-                'product_slug'    => 'test-product',
-                'expires_at'      => now()->addYear()->toDateString(),
-                'max_activations' => 5,
+                'product_public_id' => $product->public_id,
+                'expires_at'        => now()->addYear()->toDateString(),
+                'max_activations'   => 5,
             ],
         ],
     ];
@@ -29,7 +34,7 @@ test('provision license request validates successfully with valid data', functio
 test('provision license request requires customer email', function () {
     $data = [
         'products' => [
-            ['product_slug' => 'test-product'],
+            ['product_public_id' => 'test-product'],
         ],
     ];
 
@@ -44,7 +49,7 @@ test('provision license request validates email format', function () {
     $data = [
         'customer_email' => 'invalid-email',
         'products'       => [
-            ['product_slug' => 'test-product'],
+            ['product_public_id' => 'test-product'],
         ],
     ];
 
@@ -73,8 +78,8 @@ test('provision license request validates expiration date is in future', functio
         'customer_email' => 'test@example.com',
         'products'       => [
             [
-                'product_slug' => 'test-product',
-                'expires_at'   => now()->subDay()->toDateString(),
+                'product_public_id' => 'test-product',
+                'expires_at'        => now()->subDay()->toDateString(),
             ],
         ],
     ];

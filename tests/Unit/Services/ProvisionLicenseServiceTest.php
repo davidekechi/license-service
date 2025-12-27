@@ -19,7 +19,7 @@ test('can provision new license with generated key', function () {
     ]);
 
     $licenseKey = $this->service->provision(
-        brand: $brand,
+        brandPublicId: $brand->public_id,
         customerEmail: 'customer@example.com',
         products: [
             [
@@ -50,7 +50,7 @@ test('can add license to existing key', function () {
 
     // First provision
     $licenseKey = $this->service->provision(
-        brand: $brand,
+        brandPublicId: $brand->public_id,
         customerEmail: 'customer@example.com',
         products: [
             [
@@ -63,7 +63,7 @@ test('can add license to existing key', function () {
 
     // Add to existing key
     $updatedLicenseKey = $this->service->provision(
-        brand: $brand,
+        brandPublicId: $brand->public_id,
         customerEmail: 'customer@example.com',
         products: [
             [
@@ -89,7 +89,7 @@ test('throws exception when product does not belong to brand', function () {
     ]);
 
     $this->service->provision(
-        brand: $brand1,
+        brandPublicId: $brand1->public_id,
         customerEmail: 'customer@example.com',
         products: [
             [
@@ -116,7 +116,7 @@ test('throws exception when license key belongs to different brand', function ()
     ]);
 
     $this->service->provision(
-        brand: $brand1,
+        brandPublicId: $brand1->public_id,
         customerEmail: 'customer@example.com',
         products: [
             [
@@ -138,7 +138,7 @@ test('throws exception when duplicate license for product', function () {
     ]);
 
     $licenseKey = $this->service->provision(
-        brand: $brand,
+        brandPublicId: $brand->public_id,
         customerEmail: 'customer@example.com',
         products: [
             [
@@ -151,7 +151,7 @@ test('throws exception when duplicate license for product', function () {
 
     // Try to add same product again
     $this->service->provision(
-        brand: $brand,
+        brandPublicId: $brand->public_id,
         customerEmail: 'customer@example.com',
         products: [
             [

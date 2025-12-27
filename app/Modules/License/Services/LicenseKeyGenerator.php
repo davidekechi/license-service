@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Modules\License\Services;
 
-use App\Modules\Brand\Models\Brand;
 use App\Modules\License\Contracts\LicenseKeyRepositoryInterface;
 use Illuminate\Support\Str;
 
@@ -22,9 +21,9 @@ class LicenseKeyGenerator
      * Generate a unique license key for a brand.
      * Format: {BRAND_PREFIX}-{XXXX}-{XXXX}-{XXXX}
      */
-    public function generate(Brand $brand): string
+    public function generate(string $brandSlug): string
     {
-        $prefix      = $this->getBrandPrefix($brand->slug);
+        $prefix      = $this->getBrandPrefix($brandSlug);
         $maxAttempts = 10;
         $attempt     = 0;
 
