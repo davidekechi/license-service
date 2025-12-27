@@ -11,7 +11,7 @@ test('can create provision license DTO from array', function () {
         'customer_email' => 'test@example.com',
         'products'       => [
             [
-                'product_slug'    => 'test-product',
+                'product_public_id'    => 'test-product',
                 'expires_at'      => '2025-12-31',
                 'max_activations' => 5,
             ],
@@ -32,7 +32,7 @@ test('can create provision license DTO from request', function () {
         'customer_email' => 'test@example.com',
         'products'       => [
             [
-                'product_slug'    => 'test-product',
+                'product_public_id'    => 'test-product',
                 'expires_at'      => '2025-12-31',
                 'max_activations' => 5,
             ],
@@ -49,8 +49,8 @@ test('provision license DTO handles multiple products', function () {
     $data = [
         'customer_email' => 'test@example.com',
         'products'       => [
-            ['product_slug' => 'product-1', 'max_activations' => 5],
-            ['product_slug' => 'product-2', 'max_activations' => 3],
+            ['product_public_id' => 'product-1', 'max_activations' => 5],
+            ['product_public_id' => 'product-2', 'max_activations' => 3],
         ],
     ];
 

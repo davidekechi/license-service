@@ -29,7 +29,7 @@ class ProvisionLicenseService
     /**
      * Provision a new license or add to existing license key.
      *
-     * @param array<int, ProductLicenseDTO> $products
+     * @param array<int, ProductLicenseDTO|array<string, mixed>> $products
      */
     public function provision(
         string $brandPublicId,
@@ -45,8 +45,14 @@ class ProvisionLicenseService
                 throw new \InvalidArgumentException('Brand not found: ' . $brandPublicId);
             }
 
+            // Convert arrays to DTOs if needed
+            $productDtos = \array_map(
+                fn ($product) => $product instanceof ProductLicenseDTO ? $product : ProductLicenseDTO::fromArray($product),
+                $products
+            );
+
             // Enrich products with max_seats from product if max_activations not provided
-            $enrichedProducts = $this->enrichProductsWithMaxSeats($products);
+            $enrichedProducts = $this->enrichProductsWithMaxSeats($productDtos);
 
             // Get or create license key
             $licenseKey = $this->getOrCreateLicenseKey($brandPublicId, $brand->slug, $customerEmail, $existingLicenseKey);
