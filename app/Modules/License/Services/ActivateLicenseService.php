@@ -8,13 +8,9 @@ use App\Modules\License\Contracts\LicenseActivationRepositoryInterface;
 use App\Modules\License\Contracts\LicenseKeyRepositoryInterface;
 use App\Modules\License\Contracts\LicenseRepositoryInterface;
 use App\Modules\License\DTOs\ActivateLicenseDTO;
-use App\Modules\License\Enums\InstanceType;
 use App\Modules\License\Models\License;
 use App\Modules\License\Models\LicenseActivation;
-use App\Modules\License\Models\LicenseKey;
 use App\Modules\Shared\Events\LicenseActivated;
-use App\Modules\Shared\Support\Exceptions\LicenseExpiredException;
-use App\Modules\Shared\Support\Exceptions\LicenseInvalidException;
 use App\Modules\Shared\Support\Exceptions\LicenseNotFoundException;
 use App\Modules\Shared\Support\Exceptions\SeatLimitExceededException;
 use Illuminate\Support\Facades\DB;
@@ -96,12 +92,12 @@ class ActivateLicenseService
 
             // Create activation
             $activation = $this->activationRepository->create([
-                'license_id' => $license->id,
+                'license_id'          => $license->id,
                 'instance_identifier' => $dto->instanceIdentifier,
-                'instance_type' => $dto->instanceType,
-                'instance_meta' => $dto->instanceMeta,
-                'activated_at' => now(),
-                'last_checked_at' => now(),
+                'instance_type'       => $dto->instanceType,
+                'instance_meta'       => $dto->instanceMeta,
+                'activated_at'        => now(),
+                'last_checked_at'     => now(),
             ]);
 
             // Fire event for audit logging
@@ -109,8 +105,8 @@ class ActivateLicenseService
                 activation: $activation->load('license'),
                 licenseKeyString: $licenseKeyString,
                 metadata: [
-                    'seats_used' => $this->seatManagementService->getActiveSeatCount($license),
-                    'seats_total' => $license->max_activations,
+                    'seats_used'   => $this->seatManagementService->getActiveSeatCount($license),
+                    'seats_total'  => $license->max_activations,
                     'product_slug' => $dto->productSlug,
                 ]
             ));
@@ -128,8 +124,8 @@ class ActivateLicenseService
     ): LicenseActivation {
         // Update activation
         $updated = $this->activationRepository->update($activation, [
-            'deactivated_at' => null,
-            'activated_at' => now(),
+            'deactivated_at'  => null,
+            'activated_at'    => now(),
             'last_checked_at' => now(),
         ]);
 
@@ -139,8 +135,8 @@ class ActivateLicenseService
             licenseKeyString: $licenseKeyString,
             metadata: [
                 'reactivation' => true,
-                'seats_used' => $this->seatManagementService->getActiveSeatCount($updated->license),
-                'seats_total' => $updated->license->max_activations,
+                'seats_used'   => $this->seatManagementService->getActiveSeatCount($updated->license),
+                'seats_total'  => $updated->license->max_activations,
             ]
         ));
 
