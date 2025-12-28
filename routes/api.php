@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->middleware('throttle:api')->group(function () {
     // Health check endpoint
     Route::get('/health', function () {
         return response()->json([
@@ -31,7 +31,7 @@ Route::prefix('v1')->group(function () {
         ]);
     });
 
-    Route::prefix('brands')->middleware(['auth.brand'])->group(function () {
+    Route::prefix('brands')->middleware(['auth.brand', 'throttle:brand-api'])->group(function () {
         // US1: Provision License
         Route::post('/licenses/provision', [LicenseProvisioningController::class, 'provision'])
             ->name('licenses.provision');
@@ -42,9 +42,10 @@ Route::prefix('v1')->group(function () {
     });
 
     // Public routes (no brand auth required for activation)
-    Route::prefix('licenses')->group(function () {
+    Route::prefix('licenses')->middleware(['throttle:public-api'])->group(function () {
         // US3: Activate License
         Route::post('/{licenseKey}/activate', [LicenseActivationController::class, 'activate'])
+            ->middleware('throttle:activation')
             ->name('licenses.activate');
 
         // US4: Check License Status

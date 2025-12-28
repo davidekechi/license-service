@@ -1,0 +1,445 @@
+{
+	"info": {
+		"_postman_id": "license-service-api",
+		"name": "License Service API",
+		"description": "API collection for License Service - A centralized license management system for managing software licenses across multiple brands.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check if the API is running and healthy"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "License Provisioning",
+			"item": [
+				{
+					"name": "Provision New License",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{brandApiKey}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customer_email\": \"{{customerEmail}}\",\n    \"products\": [\n        {\n            \"product_public_id\": \"{{productPublicId}}\",\n            \"expires_at\": \"2025-12-31T23:59:59Z\",\n            \"max_activations\": 5\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/brands/licenses/provision",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"brands",
+								"licenses",
+								"provision"
+							]
+						},
+						"description": "Provision a new license key with one or more product licenses. If max_activations is not provided, it will default to the product's max_seats value."
+					},
+					"response": []
+				},
+				{
+					"name": "Add Products to Existing License Key",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{brandApiKey}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customer_email\": \"{{customerEmail}}\",\n    \"license_key\": \"{{licenseKey}}\",\n    \"products\": [\n        {\n            \"product_public_id\": \"{{productPublicId}}\",\n            \"expires_at\": \"2025-12-31T23:59:59Z\",\n            \"max_activations\": 10\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/brands/licenses/provision",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"brands",
+								"licenses",
+								"provision"
+							]
+						},
+						"description": "Add additional product licenses to an existing license key. The license_key must belong to the same brand and customer email."
+					},
+					"response": []
+				},
+				{
+					"name": "Provision License Without Max Activations",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{brandApiKey}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customer_email\": \"{{customerEmail}}\",\n    \"products\": [\n        {\n            \"product_public_id\": \"{{productPublicId}}\",\n            \"expires_at\": \"2025-12-31T23:59:59Z\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/brands/licenses/provision",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"brands",
+								"licenses",
+								"provision"
+							]
+						},
+						"description": "Provision a license without specifying max_activations. The system will automatically use the product's max_seats value."
+					},
+					"response": []
+				},
+				{
+					"name": "Provision Multiple Products",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{brandApiKey}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customer_email\": \"{{customerEmail}}\",\n    \"products\": [\n        {\n            \"product_public_id\": \"{{productPublicId}}\",\n            \"expires_at\": \"2025-12-31T23:59:59Z\",\n            \"max_activations\": 5\n        },\n        {\n            \"product_public_id\": \"01HZ987654321ZYXWVUTSRQPON\",\n            \"expires_at\": null,\n            \"max_activations\": 10\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/brands/licenses/provision",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"brands",
+								"licenses",
+								"provision"
+							]
+						},
+						"description": "Provision a license key with multiple products. Set expires_at to null for lifetime licenses."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "License Activation",
+			"item": [
+				{
+					"name": "Activate License for Site",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"instance_identifier\": \"https://example.com\",\n    \"instance_type\": \"site\",\n    \"product_public_id\": \"{{productPublicId}}\",\n    \"instance_meta\": {\n        \"ip\": \"192.168.1.1\",\n        \"user_agent\": \"Mozilla/5.0\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/licenses/{{licenseKey}}/activate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"licenses",
+								"{{licenseKey}}",
+								"activate"
+							]
+						},
+						"description": "Activate a license for a website instance. The license_key is provided in the URL path."
+					},
+					"response": []
+				},
+				{
+					"name": "Activate License for Device",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"instance_identifier\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"instance_type\": \"device\",\n    \"product_public_id\": \"{{productPublicId}}\",\n    \"instance_meta\": {\n        \"device_name\": \"John's MacBook Pro\",\n        \"os_version\": \"macOS 14.0\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/licenses/{{licenseKey}}/activate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"licenses",
+								"{{licenseKey}}",
+								"activate"
+							]
+						},
+						"description": "Activate a license for a device instance using a UUID as the instance identifier."
+					},
+					"response": []
+				},
+				{
+					"name": "Activate License for Server",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"instance_identifier\": \"192.168.1.100\",\n    \"instance_type\": \"server\",\n    \"product_public_id\": \"{{productPublicId}}\",\n    \"instance_meta\": {\n        \"server_name\": \"production-server-01\",\n        \"environment\": \"production\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/licenses/{{licenseKey}}/activate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"licenses",
+								"{{licenseKey}}",
+								"activate"
+							]
+						},
+						"description": "Activate a license for a server instance using an IP address as the instance identifier."
+					},
+					"response": []
+				},
+				{
+					"name": "Activate License Without Metadata",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"instance_identifier\": \"https://example.com\",\n    \"instance_type\": \"site\",\n    \"product_public_id\": \"{{productPublicId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/licenses/{{licenseKey}}/activate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"licenses",
+								"{{licenseKey}}",
+								"activate"
+							]
+						},
+						"description": "Activate a license without providing instance_meta. The metadata field is optional."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "License Status",
+			"item": [
+				{
+					"name": "Check License Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/licenses/{{licenseKey}}/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"licenses",
+								"{{licenseKey}}",
+								"status"
+							]
+						},
+						"description": "Get comprehensive status information for a license key, including all licenses, activations, and seat usage. This endpoint also updates the heartbeat timestamp for all active activations."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customer Licenses",
+			"item": [
+				{
+					"name": "List Licenses by Customer Email",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{brandApiKey}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/brands/customers/{{customerEmail}}/licenses?page=1&per_page=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"brands",
+								"customers",
+								"{{customerEmail}}",
+								"licenses"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "per_page",
+									"value": "20",
+									"description": "Items per page (default: 20, max: 100)"
+								}
+							]
+						},
+						"description": "List all license keys for a customer email across all brands. Requires brand authentication. Returns paginated results."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000/api/v1",
+			"type": "string",
+			"description": "Base API URL including version (v1)"
+		},
+		{
+			"key": "brandApiKey",
+			"value": "your-brand-api-key-from-seeder",
+			"type": "string",
+			"description": "Brand API key for authentication. Get this from the database seeder output."
+		},
+		{
+			"key": "licenseKey",
+			"value": "",
+			"type": "string",
+			"description": "License key returned from provision endpoint (format: XXXX-XXXX-XXXX-XXXX)"
+		},
+		{
+			"key": "productPublicId",
+			"value": "",
+			"type": "string",
+			"description": "Product public ID (ULID format). Get this from the database seeder output."
+		},
+		{
+			"key": "customerEmail",
+			"value": "customer@example.com",
+			"type": "string",
+			"description": "Customer email address for testing"
+		}
+	]
+}
+

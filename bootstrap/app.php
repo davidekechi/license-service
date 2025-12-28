@@ -1,9 +1,11 @@
 <?php
 
+use App\Exceptions\Handler;
+use App\Modules\Shared\Middleware\AddApiVersion;
 use App\Modules\Shared\Middleware\AuthenticateBrand;
 use App\Modules\Shared\Middleware\ValidateLicenseKey;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -18,10 +20,18 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.brand' => AuthenticateBrand::class,
             'validate.license.key' => ValidateLicenseKey::class,
         ]);
+
+        // Add API version header to all API responses
+        $middleware->api(prepend: [
+            AddApiVersion::class,
+        ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
+    ->withExceptions(function (): void {
         //
     })
+    ->withSingletons([
+        ExceptionHandler::class => Handler::class,
+    ])
     ->withProviders([
         \App\Modules\Brand\Providers\BrandServiceProvider::class,
         \App\Modules\License\Providers\LicenseServiceProvider::class,
