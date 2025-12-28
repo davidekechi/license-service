@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\License\Controllers;
 
 use App\Modules\License\Contracts\LicenseKeyRepositoryInterface;
+use App\Modules\License\Models\LicenseKey;
 use App\Modules\License\Resources\LicenseStatusResource;
 use App\Modules\Shared\Support\Helpers\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -52,8 +53,8 @@ class LicenseStatusController
             );
         } catch (\Exception $e) {
             Log::error('Failed to retrieve license status', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'error'       => $e->getMessage(),
+                'trace'       => $e->getTraceAsString(),
                 'license_key' => $licenseKey,
             ]);
 
@@ -66,7 +67,7 @@ class LicenseStatusController
     /**
      * Update heartbeat timestamps for all active activations.
      */
-    private function updateHeartbeats($licenseKey): void
+    private function updateHeartbeats(LicenseKey $licenseKey): void
     {
         try {
             foreach ($licenseKey->licenses as $license) {
@@ -79,7 +80,7 @@ class LicenseStatusController
         } catch (\Exception $e) {
             // Log but don't fail the request if heartbeat update fails
             Log::warning('Failed to update activation heartbeats', [
-                'error' => $e->getMessage(),
+                'error'       => $e->getMessage(),
                 'license_key' => $licenseKey->key,
             ]);
         }
