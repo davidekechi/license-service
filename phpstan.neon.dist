@@ -31,6 +31,8 @@ parameters:
         - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$generator\.#'
         - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$product\.#'
         - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$brand\.#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$license\.#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$licenseKey\.#'
         - '#Parameter \#1 \$licenseKeyRepository of class .* constructor expects .*, Mockery\\MockInterface given\.#'
         - '#Call to an undefined method PHPUnit\\Framework\\TestCase::withHeaders\(\)\.#'
         - '#Call to an undefined method PHPUnit\\Framework\\TestCase::postJson\(\)\.#'
