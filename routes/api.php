@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Modules\License\Controllers\CustomerLicenseController;
 use App\Modules\License\Controllers\LicenseActivationController;
 use App\Modules\License\Controllers\LicenseProvisioningController;
 use App\Modules\License\Controllers\LicenseStatusController;
@@ -30,10 +31,14 @@ Route::prefix('v1')->group(function () {
         ]);
     });
 
-    Route::prefix('brands/licenses')->middleware(['auth.brand'])->group(function () {
+    Route::prefix('brands')->middleware(['auth.brand'])->group(function () {
         // US1: Provision License
-        Route::post('/provision', [LicenseProvisioningController::class, 'provision'])
+        Route::post('/licenses/provision', [LicenseProvisioningController::class, 'provision'])
             ->name('licenses.provision');
+
+        // US6: List licenses by customer email
+        Route::get('/customers/{email}/licenses', [CustomerLicenseController::class, 'listByEmail'])
+            ->name('customers.licenses');
     });
 
     // Public routes (no brand auth required for activation)

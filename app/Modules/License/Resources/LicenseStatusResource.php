@@ -23,7 +23,6 @@ class LicenseStatusResource extends JsonResource
                 $activeCount = $license->activations->count();
 
                 return [
-                    'id'         => $license->public_id,
                     'product_id' => $license->product_id,
                     'status'     => $license->status->value,
                     'is_valid'   => $license->isValid(),

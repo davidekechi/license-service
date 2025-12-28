@@ -14,12 +14,23 @@ class LicenseResource extends JsonResource
 
     /**
      * @param mixed $resource
-     * @param array<string, mixed>|null $additionalData
      */
-    public function __construct($resource, ?array $additionalData = null)
+    public function __construct($resource)
     {
         parent::__construct($resource);
-        $this->additionalData = $additionalData;
+    }
+
+    /**
+     * Set additional data for the resource.
+     *
+     * @param array<string, mixed> $data
+     * @return static
+     */
+    public function withAdditionalData(array $data): static
+    {
+        $this->additionalData = $data;
+
+        return $this;
     }
 
     /**
@@ -32,6 +43,7 @@ class LicenseResource extends JsonResource
     {
         return [
             'public_id'       => $this->resource->public_id,
+            'product_id'      => $this->resource->product_id,
             'product'         => $this->additionalData['product'] ?? null,
             'status'          => $this->resource->status->value,
             'is_valid'        => $this->resource->isValid(),
