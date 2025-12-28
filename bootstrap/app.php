@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Shared\Middleware\AddApiVersion;
 use App\Modules\Shared\Middleware\AuthenticateBrand;
 use App\Modules\Shared\Middleware\ValidateLicenseKey;
 use Illuminate\Foundation\Application;
@@ -17,6 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth.brand' => AuthenticateBrand::class,
             'validate.license.key' => ValidateLicenseKey::class,
+        ]);
+
+        // Add API version header to all API responses
+        $middleware->api(prepend: [
+            AddApiVersion::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
@@ -37,9 +39,9 @@ class AppServiceProvider extends ServiceProvider
                 ->response(function () {
                     return response()->json([
                         'statusCode' => 429,
-                        'success' => false,
-                        'message' => 'Too many requests. Please try again later.',
-                        'errors' => null,
+                        'success'    => false,
+                        'message'    => 'Too many requests. Please try again later.',
+                        'errors'     => null,
                     ], 429);
                 });
         });
@@ -47,16 +49,16 @@ class AppServiceProvider extends ServiceProvider
         // Brand-authenticated endpoints (higher limit)
         RateLimiter::for('brand-api', function (Request $request) {
             $brand = $request->get('authenticated_brand');
-            $key = $brand ? $brand->public_id : $request->ip();
+            $key   = $brand ? $brand->public_id : $request->ip();
 
             return Limit::perMinute(config('variables.rate_limit.brand_api'))
                 ->by($key)
                 ->response(function () {
                     return response()->json([
                         'statusCode' => 429,
-                        'success' => false,
-                        'message' => 'Too many requests. Please try again later.',
-                        'errors' => null,
+                        'success'    => false,
+                        'message'    => 'Too many requests. Please try again later.',
+                        'errors'     => null,
                     ], 429);
                 });
         });
@@ -68,9 +70,9 @@ class AppServiceProvider extends ServiceProvider
                 ->response(function () {
                     return response()->json([
                         'statusCode' => 429,
-                        'success' => false,
-                        'message' => 'Too many requests. Please try again later.',
-                        'errors' => null,
+                        'success'    => false,
+                        'message'    => 'Too many requests. Please try again later.',
+                        'errors'     => null,
                     ], 429);
                 });
         });
@@ -82,9 +84,9 @@ class AppServiceProvider extends ServiceProvider
                 ->response(function () {
                     return response()->json([
                         'statusCode' => 429,
-                        'success' => false,
-                        'message' => 'Too many activation attempts. Please try again later.',
-                        'errors' => null,
+                        'success'    => false,
+                        'message'    => 'Too many activation attempts. Please try again later.',
+                        'errors'     => null,
                     ], 429);
                 });
         });
