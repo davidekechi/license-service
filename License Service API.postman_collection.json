@@ -15,13 +15,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/v1/health",
+							"raw": "{{baseUrl}}/health",
 							"host": [
-								"{{base_url}}"
+								"{{baseUrl}}"
 							],
 							"path": [
-								"api",
-								"v1",
 								"health"
 							]
 						},
@@ -41,7 +39,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{brand_api_key}}",
+								"value": "Bearer {{brandApiKey}}",
 								"type": "text"
 							},
 							{
@@ -52,7 +50,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"customer_email\": \"customer@example.com\",\n    \"products\": [\n        {\n            \"product_public_id\": \"01HZ123456789ABCDEFGHIJKLMN\",\n            \"expires_at\": \"2025-12-31T23:59:59Z\",\n            \"max_activations\": 5\n        }\n    ]\n}",
+							"raw": "{\n    \"customer_email\": \"{{customerEmail}}\",\n    \"products\": [\n        {\n            \"product_public_id\": \"{{productPublicId}}\",\n            \"expires_at\": \"2025-12-31T23:59:59Z\",\n            \"max_activations\": 5\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -60,13 +58,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/brands/licenses/provision",
+							"raw": "{{baseUrl}}/brands/licenses/provision",
 							"host": [
-								"{{base_url}}"
+								"{{baseUrl}}"
 							],
 							"path": [
-								"api",
-								"v1",
 								"brands",
 								"licenses",
 								"provision"
@@ -83,7 +79,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{brand_api_key}}",
+								"value": "Bearer {{brandApiKey}}",
 								"type": "text"
 							},
 							{
@@ -94,7 +90,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"customer_email\": \"customer@example.com\",\n    \"license_key\": \"RANK-1234-5678-9ABC\",\n    \"products\": [\n        {\n            \"product_public_id\": \"01HZ123456789ABCDEFGHIJKLMN\",\n            \"expires_at\": \"2025-12-31T23:59:59Z\",\n            \"max_activations\": 10\n        }\n    ]\n}",
+							"raw": "{\n    \"customer_email\": \"{{customerEmail}}\",\n    \"license_key\": \"{{licenseKey}}\",\n    \"products\": [\n        {\n            \"product_public_id\": \"{{productPublicId}}\",\n            \"expires_at\": \"2025-12-31T23:59:59Z\",\n            \"max_activations\": 10\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -102,13 +98,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/brands/licenses/provision",
+							"raw": "{{baseUrl}}/brands/licenses/provision",
 							"host": [
-								"{{base_url}}"
+								"{{baseUrl}}"
 							],
 							"path": [
-								"api",
-								"v1",
 								"brands",
 								"licenses",
 								"provision"
@@ -125,7 +119,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{brand_api_key}}",
+								"value": "Bearer {{brandApiKey}}",
 								"type": "text"
 							},
 							{
@@ -136,7 +130,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"customer_email\": \"customer@example.com\",\n    \"products\": [\n        {\n            \"product_public_id\": \"01HZ123456789ABCDEFGHIJKLMN\",\n            \"expires_at\": \"2025-12-31T23:59:59Z\"\n        }\n    ]\n}",
+							"raw": "{\n    \"customer_email\": \"{{customerEmail}}\",\n    \"products\": [\n        {\n            \"product_public_id\": \"{{productPublicId}}\",\n            \"expires_at\": \"2025-12-31T23:59:59Z\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -144,13 +138,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/brands/licenses/provision",
+							"raw": "{{baseUrl}}/brands/licenses/provision",
 							"host": [
-								"{{base_url}}"
+								"{{baseUrl}}"
 							],
 							"path": [
-								"api",
-								"v1",
 								"brands",
 								"licenses",
 								"provision"
@@ -167,7 +159,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{brand_api_key}}",
+								"value": "Bearer {{brandApiKey}}",
 								"type": "text"
 							},
 							{
@@ -178,7 +170,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"customer_email\": \"customer@example.com\",\n    \"products\": [\n        {\n            \"product_public_id\": \"01HZ123456789ABCDEFGHIJKLMN\",\n            \"expires_at\": \"2025-12-31T23:59:59Z\",\n            \"max_activations\": 5\n        },\n        {\n            \"product_public_id\": \"01HZ987654321ZYXWVUTSRQPON\",\n            \"expires_at\": null,\n            \"max_activations\": 10\n        }\n    ]\n}",
+							"raw": "{\n    \"customer_email\": \"{{customerEmail}}\",\n    \"products\": [\n        {\n            \"product_public_id\": \"{{productPublicId}}\",\n            \"expires_at\": \"2025-12-31T23:59:59Z\",\n            \"max_activations\": 5\n        },\n        {\n            \"product_public_id\": \"01HZ987654321ZYXWVUTSRQPON\",\n            \"expires_at\": null,\n            \"max_activations\": 10\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -186,13 +178,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/brands/licenses/provision",
+							"raw": "{{baseUrl}}/brands/licenses/provision",
 							"host": [
-								"{{base_url}}"
+								"{{baseUrl}}"
 							],
 							"path": [
-								"api",
-								"v1",
 								"brands",
 								"licenses",
 								"provision"
@@ -220,7 +210,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"instance_identifier\": \"https://example.com\",\n    \"instance_type\": \"site\",\n    \"product_public_id\": \"01HZ123456789ABCDEFGHIJKLMN\",\n    \"instance_meta\": {\n        \"ip\": \"192.168.1.1\",\n        \"user_agent\": \"Mozilla/5.0\"\n    }\n}",
+							"raw": "{\n    \"instance_identifier\": \"https://example.com\",\n    \"instance_type\": \"site\",\n    \"product_public_id\": \"{{productPublicId}}\",\n    \"instance_meta\": {\n        \"ip\": \"192.168.1.1\",\n        \"user_agent\": \"Mozilla/5.0\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -228,15 +218,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/licenses/{{license_key}}/activate",
+							"raw": "{{baseUrl}}/licenses/{{licenseKey}}/activate",
 							"host": [
-								"{{base_url}}"
+								"{{baseUrl}}"
 							],
 							"path": [
-								"api",
-								"v1",
 								"licenses",
-								"{{license_key}}",
+								"{{licenseKey}}",
 								"activate"
 							]
 						},
@@ -257,7 +245,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"instance_identifier\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"instance_type\": \"device\",\n    \"product_public_id\": \"01HZ123456789ABCDEFGHIJKLMN\",\n    \"instance_meta\": {\n        \"device_name\": \"John's MacBook Pro\",\n        \"os_version\": \"macOS 14.0\"\n    }\n}",
+							"raw": "{\n    \"instance_identifier\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"instance_type\": \"device\",\n    \"product_public_id\": \"{{productPublicId}}\",\n    \"instance_meta\": {\n        \"device_name\": \"John's MacBook Pro\",\n        \"os_version\": \"macOS 14.0\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -265,15 +253,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/licenses/{{license_key}}/activate",
+							"raw": "{{baseUrl}}/licenses/{{licenseKey}}/activate",
 							"host": [
-								"{{base_url}}"
+								"{{baseUrl}}"
 							],
 							"path": [
-								"api",
-								"v1",
 								"licenses",
-								"{{license_key}}",
+								"{{licenseKey}}",
 								"activate"
 							]
 						},
@@ -294,7 +280,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"instance_identifier\": \"192.168.1.100\",\n    \"instance_type\": \"server\",\n    \"product_public_id\": \"01HZ123456789ABCDEFGHIJKLMN\",\n    \"instance_meta\": {\n        \"server_name\": \"production-server-01\",\n        \"environment\": \"production\"\n    }\n}",
+							"raw": "{\n    \"instance_identifier\": \"192.168.1.100\",\n    \"instance_type\": \"server\",\n    \"product_public_id\": \"{{productPublicId}}\",\n    \"instance_meta\": {\n        \"server_name\": \"production-server-01\",\n        \"environment\": \"production\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -302,15 +288,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/licenses/{{license_key}}/activate",
+							"raw": "{{baseUrl}}/licenses/{{licenseKey}}/activate",
 							"host": [
-								"{{base_url}}"
+								"{{baseUrl}}"
 							],
 							"path": [
-								"api",
-								"v1",
 								"licenses",
-								"{{license_key}}",
+								"{{licenseKey}}",
 								"activate"
 							]
 						},
@@ -331,7 +315,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"instance_identifier\": \"https://example.com\",\n    \"instance_type\": \"site\",\n    \"product_public_id\": \"01HZ123456789ABCDEFGHIJKLMN\"\n}",
+							"raw": "{\n    \"instance_identifier\": \"https://example.com\",\n    \"instance_type\": \"site\",\n    \"product_public_id\": \"{{productPublicId}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -339,15 +323,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/licenses/{{license_key}}/activate",
+							"raw": "{{baseUrl}}/licenses/{{licenseKey}}/activate",
 							"host": [
-								"{{base_url}}"
+								"{{baseUrl}}"
 							],
 							"path": [
-								"api",
-								"v1",
 								"licenses",
-								"{{license_key}}",
+								"{{licenseKey}}",
 								"activate"
 							]
 						},
@@ -366,15 +348,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/v1/licenses/{{license_key}}/status",
+							"raw": "{{baseUrl}}/licenses/{{licenseKey}}/status",
 							"host": [
-								"{{base_url}}"
+								"{{baseUrl}}"
 							],
 							"path": [
-								"api",
-								"v1",
 								"licenses",
-								"{{license_key}}",
+								"{{licenseKey}}",
 								"status"
 							]
 						},
@@ -394,21 +374,19 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{brand_api_key}}",
+								"value": "Bearer {{brandApiKey}}",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/brands/customers/{{customer_email}}/licenses?page=1&per_page=20",
+							"raw": "{{baseUrl}}/brands/customers/{{customerEmail}}/licenses?page=1&per_page=20",
 							"host": [
-								"{{base_url}}"
+								"{{baseUrl}}"
 							],
 							"path": [
-								"api",
-								"v1",
 								"brands",
 								"customers",
-								"{{customer_email}}",
+								"{{customerEmail}}",
 								"licenses"
 							],
 							"query": [
@@ -433,27 +411,34 @@
 	],
 	"variable": [
 		{
-			"key": "base_url",
-			"value": "http://localhost:8000",
-			"type": "string"
-		},
-		{
-			"key": "brand_api_key",
-			"value": "sk_live_rankmath_abc123...",
+			"key": "baseUrl",
+			"value": "http://localhost:8000/api/v1",
 			"type": "string",
-			"description": "Brand API key for authentication. Get this from your brand account."
+			"description": "Base API URL including version (v1)"
 		},
 		{
-			"key": "license_key",
-			"value": "RANK-1234-5678-9ABC",
+			"key": "brandApiKey",
+			"value": "your-brand-api-key-from-seeder",
 			"type": "string",
-			"description": "Example license key in format: XXXX-XXXX-XXXX-XXXX"
+			"description": "Brand API key for authentication. Get this from the database seeder output."
 		},
 		{
-			"key": "customer_email",
+			"key": "licenseKey",
+			"value": "",
+			"type": "string",
+			"description": "License key returned from provision endpoint (format: XXXX-XXXX-XXXX-XXXX)"
+		},
+		{
+			"key": "productPublicId",
+			"value": "",
+			"type": "string",
+			"description": "Product public ID (ULID format). Get this from the database seeder output."
+		},
+		{
+			"key": "customerEmail",
 			"value": "customer@example.com",
 			"type": "string",
-			"description": "Customer email address"
+			"description": "Customer email address for testing"
 		}
 	]
 }
