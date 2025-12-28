@@ -41,13 +41,13 @@ class ProvisionLicenseRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'customer_email.required'          => 'Customer email is required',
-            'customer_email.email'             => 'Customer email must be a valid email address',
-            'products.required'                => 'At least one product is required',
-            'products.min'                     => 'At least one product is required',
-            'products.*.product_slug.required' => 'Product slug is required for each product',
-            'products.*.expires_at.after'      => 'Expiration date must be in the future',
-            'license_key.size'                 => 'License key must be 19 characters long',
+            'customer_email.required'               => 'Customer email is required',
+            'customer_email.email'                  => 'Customer email must be a valid email address',
+            'products.required'                     => 'At least one product is required',
+            'products.min'                          => 'At least one product is required',
+            'products.*.product_public_id.required' => 'Product slug is required for each product',
+            'products.*.expires_at.after'           => 'Expiration date must be in the future',
+            'license_key.size'                      => 'License key must be 19 characters long',
         ];
     }
 }

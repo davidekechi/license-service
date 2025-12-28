@@ -17,7 +17,7 @@ class ActivateLicenseDTO
     public function __construct(
         public readonly string $instanceIdentifier,
         public readonly InstanceType $instanceType,
-        public readonly string $productSlug,
+        public readonly string $productPublicId,
         public readonly ?array $instanceMeta = null
     ) {
     }
@@ -30,7 +30,7 @@ class ActivateLicenseDTO
         return new self(
             instanceIdentifier: $request->input('instance_identifier'),
             instanceType: InstanceType::from($request->input('instance_type', 'site')),
-            productSlug: $request->input('product_slug'),
+            productPublicId: $request->input('product_public_id'),
             instanceMeta: $request->input('instance_meta')
         );
     }
@@ -45,7 +45,7 @@ class ActivateLicenseDTO
         return new self(
             instanceIdentifier: $data['instance_identifier'],
             instanceType: InstanceType::from($data['instance_type'] ?? 'site'),
-            productSlug: $data['product_slug'],
+            productPublicId: $data['product_public_id'],
             instanceMeta: $data['instance_meta'] ?? null
         );
     }
@@ -60,7 +60,7 @@ class ActivateLicenseDTO
         return [
             'instance_identifier' => $this->instanceIdentifier,
             'instance_type'       => $this->instanceType->value,
-            'product_slug'        => $this->productSlug,
+            'product_public_id'   => $this->productPublicId,
             'instance_meta'       => $this->instanceMeta,
         ];
     }

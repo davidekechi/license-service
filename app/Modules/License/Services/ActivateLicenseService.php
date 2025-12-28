@@ -44,10 +44,10 @@ class ActivateLicenseService
             }
 
             // Find product to get product_id
-            $product = $this->brandService->findProductByPublicId($dto->productSlug);
+            $product = $this->brandService->findProductByPublicId($dto->productPublicId);
 
             if ($product === null) {
-                throw new LicenseNotFoundException('Product not found: ' . $dto->productSlug);
+                throw new LicenseNotFoundException('Product not found: ' . $dto->productPublicId);
             }
 
             // Find the specific license for this product
@@ -58,7 +58,7 @@ class ActivateLicenseService
 
             if ($license === null) {
                 throw new LicenseNotFoundException(
-                    'No license found for product: ' . $dto->productSlug
+                    'No license found for product: ' . $dto->productPublicId
                 );
             }
 
@@ -105,9 +105,9 @@ class ActivateLicenseService
                 activation: $activation->load('license'),
                 licenseKeyString: $licenseKeyString,
                 metadata: [
-                    'seats_used'   => $this->seatManagementService->getActiveSeatCount($license),
-                    'seats_total'  => $license->max_activations,
-                    'product_slug' => $dto->productSlug,
+                    'seats_used'        => $this->seatManagementService->getActiveSeatCount($license),
+                    'seats_total'       => $license->max_activations,
+                    'product_public_id' => $dto->productPublicId,
                 ]
             ));
 

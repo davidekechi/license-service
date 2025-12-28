@@ -37,7 +37,7 @@ test('can activate license on valid instance', function () {
     $response = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
     ]);
 
     $response->assertStatus(201)
@@ -46,7 +46,7 @@ test('can activate license on valid instance', function () {
             'success',
             'message',
             'data' => [
-                'id',
+                'public_id',
                 'instance_identifier',
                 'instance_type',
                 'activated_at',
@@ -63,7 +63,7 @@ test('activation consumes a seat', function () {
     $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
     ]);
 
     $activeCount = LicenseActivation::where('license_id', $this->license->id)
@@ -82,7 +82,7 @@ test('rejects activation when no seats available', function () {
     $response = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://new-site.com',
         'instance_type'       => 'site',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
     ]);
 
     $response->assertStatus(403)
@@ -96,7 +96,7 @@ test('rejects activation on expired license', function () {
     $response = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
     ]);
 
     $response->assertStatus(403)
@@ -111,7 +111,7 @@ test('rejects activation on suspended license', function () {
     $response = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
     ]);
 
     $response->assertStatus(403)
@@ -125,7 +125,7 @@ test('rejects activation on cancelled license', function () {
     $response = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
     ]);
 
     $response->assertStatus(403)
@@ -144,7 +144,7 @@ test('handles different instance types', function () {
         $response = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
             'instance_identifier' => $instance['identifier'],
             'instance_type'       => $instance['type'],
-            'product_slug'        => $this->product->public_id,
+            'product_public_id'   => $this->product->public_id,
         ]);
 
         $response->assertStatus(201);
@@ -158,7 +158,7 @@ test('duplicate activation is idempotent', function () {
     $firstResponse = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
     ]);
 
     $firstId = $firstResponse->json('data.id');
@@ -167,7 +167,7 @@ test('duplicate activation is idempotent', function () {
     $secondResponse = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
     ]);
 
     $secondId = $secondResponse->json('data.id');
@@ -186,7 +186,7 @@ test('can reactivate previously deactivated instance', function () {
     $response = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
     ]);
 
     $response->assertStatus(201);
@@ -202,14 +202,14 @@ test('validates required fields', function () {
     ]);
 
     $response->assertStatus(422)
-        ->assertJsonValidationErrors(['instance_identifier', 'instance_type', 'product_slug']);
+        ->assertJsonValidationErrors(['instance_identifier', 'instance_type', 'product_public_id']);
 });
 
 test('validates instance type enum', function () {
     $response = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'invalid-type',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
     ]);
 
     $response->assertStatus(422)
@@ -220,7 +220,7 @@ test('returns 404 for non-existent license key', function () {
     $response = $this->postJson('/api/v1/licenses/FAKE-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
     ]);
 
     $response->assertStatus(404)
@@ -237,18 +237,18 @@ test('returns 404 for product not in license key', function () {
     $response = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => $otherProduct->public_id,
+        'product_public_id'   => $otherProduct->public_id,
     ]);
 
     $response->assertStatus(404)
-        ->assertJsonPath('message', 'No license found for product: ' . $otherProduct->public_id);
+        ->assertJsonPath('message', 'License not found: No license found for product: ' . $otherProduct->public_id);
 });
 
 test('creates audit log on successful activation', function () {
     $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
     ]);
 
     // Process queue
@@ -265,7 +265,7 @@ test('supports instance metadata', function () {
     $response = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => $this->product->public_id,
+        'product_public_id'   => $this->product->public_id,
         'instance_meta'       => [
             'ip'         => '192.168.1.1',
             'user_agent' => 'WordPress/6.0',
@@ -287,7 +287,7 @@ test('allows unlimited activations for unlimited licenses', function () {
         $response = $this->postJson('/api/v1/licenses/TEST-1234-5678-9ABC/activate', [
             'instance_identifier' => 'https://site-' . $i . '.com',
             'instance_type'       => 'site',
-            'product_slug'        => $this->product->public_id,
+            'product_public_id'   => $this->product->public_id,
         ]);
 
         $response->assertStatus(201);

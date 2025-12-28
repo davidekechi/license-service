@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Modules\Shared\Events;
 
 use App\Modules\License\Models\LicenseActivation;
+use App\Modules\Shared\Contracts\AuditableEvent;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class LicenseActivated
+class LicenseActivated implements AuditableEvent
 {
     use Dispatchable;
     use SerializesModels;

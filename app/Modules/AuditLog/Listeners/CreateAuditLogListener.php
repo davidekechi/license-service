@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\AuditLog\Listeners;
 
 use App\Modules\AuditLog\Contracts\AuditLogRepositoryInterface;
-use App\Modules\Shared\Events\LicenseProvisioned;
+use App\Modules\Shared\Contracts\AuditableEvent;
 use Illuminate\Support\Facades\Log;
 
 class CreateAuditLogListener
@@ -21,7 +21,7 @@ class CreateAuditLogListener
     /**
      * Handle the event.
      */
-    public function handle(LicenseProvisioned $event): void
+    public function handle(AuditableEvent $event): void
     {
         try {
             $this->auditLogRepository->create([

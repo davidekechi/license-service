@@ -9,7 +9,7 @@ test('activate license request validates successfully with valid data', function
     $data = [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => 'test-product',
+        'product_public_id'   => 'test-product',
     ];
 
     $request   = new ActivateLicenseRequest();
@@ -20,8 +20,8 @@ test('activate license request validates successfully with valid data', function
 
 test('activate license request requires instance identifier', function () {
     $data = [
-        'instance_type' => 'site',
-        'product_slug'  => 'test-product',
+        'instance_type'     => 'site',
+        'product_public_id' => 'test-product',
     ];
 
     $request   = new ActivateLicenseRequest();
@@ -35,7 +35,7 @@ test('activate license request validates instance type enum', function () {
     $data = [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'invalid-type',
-        'product_slug'        => 'test-product',
+        'product_public_id'   => 'test-product',
     ];
 
     $request   = new ActivateLicenseRequest();
@@ -52,7 +52,7 @@ test('activate license request accepts all valid instance types', function () {
         $data = [
             'instance_identifier' => 'https://example.com',
             'instance_type'       => $type,
-            'product_slug'        => 'test-product',
+            'product_public_id'   => 'test-product',
         ];
 
         $request   = new ActivateLicenseRequest();
