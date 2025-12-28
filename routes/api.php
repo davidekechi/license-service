@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Modules\License\Controllers\LicenseActivationController;
 use App\Modules\License\Controllers\LicenseProvisioningController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,5 +33,12 @@ Route::prefix('v1')->group(function () {
         // US1: Provision License
         Route::post('/provision', [LicenseProvisioningController::class, 'provision'])
             ->name('licenses.provision');
+    });
+
+    // Public routes (no brand auth required for activation)
+    Route::prefix('licenses')->group(function () {
+        // US3: Activate License
+        Route::post('/{licenseKey}/activate', [LicenseActivationController::class, 'activate'])
+            ->name('licenses.activate');
     });
 });

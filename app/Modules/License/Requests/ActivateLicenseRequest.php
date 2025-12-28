@@ -28,7 +28,7 @@ class ActivateLicenseRequest extends FormRequest
         return [
             'instance_identifier' => ['required', 'string', 'max:255'],
             'instance_type'       => ['required', 'string', Rule::in(InstanceType::values())],
-            'product_slug'        => ['required', 'string'],
+            'product_public_id'   => ['required', 'string'],
             'instance_meta'       => ['nullable', 'array'],
         ];
     }
@@ -44,7 +44,7 @@ class ActivateLicenseRequest extends FormRequest
             'instance_identifier.required' => 'Instance identifier is required',
             'instance_type.required'       => 'Instance type is required',
             'instance_type.in'             => 'Instance type must be one of: site, device, server',
-            'product_slug.required'        => 'Product slug is required',
+            'product_public_id.required'   => 'Product slug is required',
         ];
     }
 }

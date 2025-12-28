@@ -10,7 +10,7 @@ test('can create activate license DTO from array', function () {
     $data = [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => 'test-product',
+        'product_public_id'   => 'test-product',
         'instance_meta'       => ['key' => 'value'],
     ];
 
@@ -18,7 +18,7 @@ test('can create activate license DTO from array', function () {
 
     expect($dto->instanceIdentifier)->toBe('https://example.com')
         ->and($dto->instanceType)->toBe(InstanceType::SITE)
-        ->and($dto->productSlug)->toBe('test-product')
+        ->and($dto->productPublicId)->toBe('test-product')
         ->and($dto->instanceMeta)->toBe(['key' => 'value']);
 });
 
@@ -26,20 +26,20 @@ test('can create activate license DTO from request', function () {
     $request = Request::create('/api/activate', 'POST', [
         'instance_identifier' => 'https://example.com',
         'instance_type'       => 'site',
-        'product_slug'        => 'test-product',
+        'product_public_id'   => 'test-product',
     ]);
 
     $dto = ActivateLicenseDTO::fromRequest($request);
 
     expect($dto->instanceIdentifier)->toBe('https://example.com')
         ->and($dto->instanceType)->toBe(InstanceType::SITE)
-        ->and($dto->productSlug)->toBe('test-product');
+        ->and($dto->productPublicId)->toBe('test-product');
 });
 
 test('activate license DTO defaults to site instance type', function () {
     $data = [
         'instance_identifier' => 'https://example.com',
-        'product_slug'        => 'test-product',
+        'product_public_id'   => 'test-product',
     ];
 
     $dto = ActivateLicenseDTO::fromArray($data);
@@ -51,12 +51,12 @@ test('activate license DTO converts to array correctly', function () {
     $dto = new ActivateLicenseDTO(
         instanceIdentifier: 'https://example.com',
         instanceType: InstanceType::DEVICE,
-        productSlug: 'test-product',
+        productPublicId: 'test-product',
         instanceMeta: ['device_id' => '123']
     );
 
     $array = $dto->toArray();
 
-    expect($array)->toHaveKeys(['instance_identifier', 'instance_type', 'product_slug', 'instance_meta'])
+    expect($array)->toHaveKeys(['instance_identifier', 'instance_type', 'product_public_id', 'instance_meta'])
         ->and($array['instance_type'])->toBe('device');
 });

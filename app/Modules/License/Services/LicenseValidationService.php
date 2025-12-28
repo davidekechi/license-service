@@ -5,30 +5,33 @@ declare(strict_types=1);
 namespace App\Modules\License\Services;
 
 use App\Modules\License\Models\License;
+use App\Modules\Shared\Support\Exceptions\LicenseExpiredException;
+use App\Modules\Shared\Support\Exceptions\LicenseInvalidException;
 
 class LicenseValidationService
 {
     /**
      * Validate if license can be activated.
      *
-     * @throws \RuntimeException
+     * @throws LicenseInvalidException
+     * @throws LicenseExpiredException
      */
     public function validateForActivation(License $license): void
     {
         if ($license->isCancelled()) {
-            throw new \RuntimeException('License has been cancelled');
+            throw new LicenseInvalidException('License has been cancelled');
         }
 
         if ($license->isSuspended()) {
-            throw new \RuntimeException('License is currently suspended');
+            throw new LicenseInvalidException('License is currently suspended');
         }
 
         if ($license->isExpired()) {
-            throw new \RuntimeException('License has expired on ' . $license->expires_at?->toDateString());
+            throw new LicenseExpiredException($license->expires_at?->toDateString() ?? 'unknown date');
         }
 
         if (!$license->isValid()) {
-            throw new \RuntimeException('License is not valid');
+            throw new LicenseInvalidException('License is not valid');
         }
     }
 
@@ -41,7 +44,7 @@ class LicenseValidationService
             $this->validateForActivation($license);
 
             return true;
-        } catch (\RuntimeException) {
+        } catch (LicenseInvalidException|LicenseExpiredException) {
             return false;
         }
     }
