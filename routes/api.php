@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Modules\License\Controllers\LicenseActivationController;
 use App\Modules\License\Controllers\LicenseProvisioningController;
+use App\Modules\License\Controllers\LicenseStatusController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,5 +41,9 @@ Route::prefix('v1')->group(function () {
         // US3: Activate License
         Route::post('/{licenseKey}/activate', [LicenseActivationController::class, 'activate'])
             ->name('licenses.activate');
+
+        // US4: Check License Status
+        Route::get('/{licenseKey}/status', [LicenseStatusController::class, 'status'])
+            ->name('licenses.status');
     });
 });
