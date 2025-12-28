@@ -7,6 +7,8 @@ use App\Modules\License\Enums\LicenseStatus;
 use App\Modules\License\Models\License;
 use App\Modules\License\Models\LicenseKey;
 use App\Modules\License\Services\LicenseValidationService;
+use App\Modules\Shared\Support\Exceptions\LicenseExpiredException;
+use App\Modules\Shared\Support\Exceptions\LicenseInvalidException;
 
 beforeEach(function () {
     $this->service = app(LicenseValidationService::class);
@@ -36,19 +38,19 @@ test('throws exception for cancelled license', function () {
     $license = License::factory()->cancelled()->create();
 
     $this->service->validateForActivation($license);
-})->throws(RuntimeException::class, 'License has been cancelled');
+})->throws(LicenseInvalidException::class, 'License has been cancelled');
 
 test('throws exception for suspended license', function () {
     $license = License::factory()->suspended()->create();
 
     $this->service->validateForActivation($license);
-})->throws(RuntimeException::class, 'License is currently suspended');
+})->throws(LicenseInvalidException::class, 'License is currently suspended');
 
 test('throws exception for expired license', function () {
     $license = License::factory()->expired()->create();
 
     $this->service->validateForActivation($license);
-})->throws(RuntimeException::class, 'License has expired');
+})->throws(LicenseExpiredException::class);
 
 test('isUsable returns true for valid license', function () {
     $brand   = Brand::factory()->create();

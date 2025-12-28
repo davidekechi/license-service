@@ -1,10 +1,11 @@
 <?php
 
+use App\Exceptions\Handler;
 use App\Modules\Shared\Middleware\AddApiVersion;
 use App\Modules\Shared\Middleware\AuthenticateBrand;
 use App\Modules\Shared\Middleware\ValidateLicenseKey;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -25,9 +26,12 @@ return Application::configure(basePath: dirname(__DIR__))
             AddApiVersion::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
+    ->withExceptions(function (): void {
         //
     })
+    ->withSingletons([
+        ExceptionHandler::class => Handler::class,
+    ])
     ->withProviders([
         \App\Modules\Brand\Providers\BrandServiceProvider::class,
         \App\Modules\License\Providers\LicenseServiceProvider::class,
