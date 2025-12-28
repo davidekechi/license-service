@@ -74,7 +74,7 @@ class LicenseProvisioningController
                     ] : null,
                 ];
 
-                return new LicenseResource($license, $additionalData);
+                return (new LicenseResource($license))->withAdditionalData($additionalData);
             })->toArray();
 
             // Build response manually to include licenses with product data
