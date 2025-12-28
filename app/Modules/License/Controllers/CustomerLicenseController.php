@@ -35,7 +35,7 @@ class CustomerLicenseController
                 'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
             ]);
 
-            $perPage = $validated['per_page'] ?? 20;
+            $perPage = (int) ($validated['per_page'] ?? 20);
 
             // Get authenticated brand (required by middleware)
             $brand = $request->get('authenticated_brand');
@@ -44,11 +44,9 @@ class CustomerLicenseController
                 return ApiResponse::unauthorized('Brand authentication required');
             }
 
-            // Decode email if URL encoded
-            $decodedEmail = urldecode($email);
-
+            // Laravel automatically decodes route parameters, so we don't need to urldecode
             // Validate email format
-            if (!filter_var($decodedEmail, FILTER_VALIDATE_EMAIL)) {
+            if (!\filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 return ApiResponse::validationError(
                     errors: ['email' => ['The email format is invalid']],
                     message: 'Invalid email format'
@@ -56,7 +54,7 @@ class CustomerLicenseController
             }
 
             // Get all license keys for this customer email
-            $licenseKeys = $this->licenseKeyRepository->getByCustomerEmail($decodedEmail);
+            $licenseKeys = $this->licenseKeyRepository->getByCustomerEmail($email);
 
             // Eager load relationships
             $licenseKeys->load(['licenses.activations' => function ($query) {
@@ -64,13 +62,13 @@ class CustomerLicenseController
             }]);
 
             // Paginate in memory (since we already have the collection)
-            $currentPage = $request->input('page', 1);
-            $offset = ($currentPage - 1) * $perPage;
-            
+            $currentPage = (int) $request->input('page', 1);
+            $offset      = ($currentPage - 1) * $perPage;
+
             $paginatedKeys = $licenseKeys->slice($offset, $perPage)->values();
-            
-            $total = $licenseKeys->count();
-            $lastPage = (int) ceil($total / $perPage);
+
+            $total    = $licenseKeys->count();
+            $lastPage = (int) \ceil($total / $perPage);
 
             // Return paginated resource collection
             return ApiResponse::success(
@@ -78,11 +76,11 @@ class CustomerLicenseController
                     'data' => LicenseKeyResource::collection($paginatedKeys),
                     'meta' => [
                         'current_page' => $currentPage,
-                        'per_page' => $perPage,
-                        'total' => $total,
-                        'last_page' => $lastPage,
-                        'from' => $offset + 1,
-                        'to' => min($offset + $perPage, $total),
+                        'per_page'     => $perPage,
+                        'total'        => $total,
+                        'last_page'    => $lastPage,
+                        'from'         => $offset + 1,
+                        'to'           => \min($offset + $perPage, $total),
                     ],
                 ],
                 message: 'Customer licenses retrieved successfully'
@@ -94,9 +92,9 @@ class CustomerLicenseController
             );
         } catch (\Exception $e) {
             Log::error('Failed to retrieve customer licenses', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'email' => $email,
+                'error'    => $e->getMessage(),
+                'trace'    => $e->getTraceAsString(),
+                'email'    => $email,
                 'brand_id' => $brand->public_id ?? 'unknown',
             ]);
 

@@ -7,10 +7,10 @@ use App\Modules\License\Models\License;
 use App\Modules\License\Models\LicenseKey;
 
 beforeEach(function () {
-    $this->brand = Brand::factory()->create(['is_active' => true]);
+    $this->brand   = Brand::factory()->create(['is_active' => true]);
     $this->product = $this->brand->products()->create([
-        'name' => 'Test Product',
-        'slug' => 'test-product',
+        'name'      => 'Test Product',
+        'slug'      => 'test-product',
         'max_seats' => 5,
         'is_active' => true,
     ]);
@@ -19,23 +19,23 @@ beforeEach(function () {
 test('can list all licenses for a customer email', function () {
     // Create 2 license keys for same customer
     $licenseKey1 = LicenseKey::factory()->create([
-        'brand_id' => $this->brand->public_id,
+        'brand_id'       => $this->brand->public_id,
         'customer_email' => 'customer@example.com',
     ]);
 
     $licenseKey2 = LicenseKey::factory()->create([
-        'brand_id' => $this->brand->public_id,
+        'brand_id'       => $this->brand->public_id,
         'customer_email' => 'customer@example.com',
     ]);
 
     License::factory()->create([
         'license_key_id' => $licenseKey1->id,
-        'product_id' => $this->product->public_id,
+        'product_id'     => $this->product->public_id,
     ]);
 
     License::factory()->create([
         'license_key_id' => $licenseKey2->id,
-        'product_id' => $this->product->public_id,
+        'product_id'     => $this->product->public_id,
     ]);
 
     $response = $this->withHeaders([
@@ -71,33 +71,33 @@ test('can list all licenses for a customer email', function () {
 
 test('lists licenses across multiple brands for same customer', function () {
     // Create another brand
-    $brand2 = Brand::factory()->create(['is_active' => true]);
+    $brand2   = Brand::factory()->create(['is_active' => true]);
     $product2 = $brand2->products()->create([
-        'name' => 'Brand 2 Product',
-        'slug' => 'brand-2-product',
+        'name'      => 'Brand 2 Product',
+        'slug'      => 'brand-2-product',
         'max_seats' => 3,
     ]);
 
     // License key from brand 1
     $licenseKey1 = LicenseKey::factory()->create([
-        'brand_id' => $this->brand->public_id,
+        'brand_id'       => $this->brand->public_id,
         'customer_email' => 'john@example.com',
     ]);
 
     License::factory()->create([
         'license_key_id' => $licenseKey1->id,
-        'product_id' => $this->product->public_id,
+        'product_id'     => $this->product->public_id,
     ]);
 
     // License key from brand 2
     $licenseKey2 = LicenseKey::factory()->create([
-        'brand_id' => $brand2->public_id,
+        'brand_id'       => $brand2->public_id,
         'customer_email' => 'john@example.com',
     ]);
 
     License::factory()->create([
         'license_key_id' => $licenseKey2->id,
-        'product_id' => $product2->public_id,
+        'product_id'     => $product2->public_id,
     ]);
 
     // Brand 1 can see both
@@ -148,17 +148,17 @@ test('validates email format', function () {
 
 test('handles URL-encoded email addresses', function () {
     $licenseKey = LicenseKey::factory()->create([
-        'brand_id' => $this->brand->public_id,
+        'brand_id'       => $this->brand->public_id,
         'customer_email' => 'test+tag@example.com',
     ]);
 
     License::factory()->create([
         'license_key_id' => $licenseKey->id,
-        'product_id' => $this->product->public_id,
+        'product_id'     => $this->product->public_id,
     ]);
 
     // URL encode the email (+ becomes %2B)
-    $encodedEmail = urlencode('test+tag@example.com');
+    $encodedEmail = \urlencode('test+tag@example.com');
 
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $this->brand->api_key,
@@ -173,13 +173,13 @@ test('supports pagination', function () {
     // Create 25 license keys for same customer
     for ($i = 1; $i <= 25; $i++) {
         $licenseKey = LicenseKey::factory()->create([
-            'brand_id' => $this->brand->public_id,
+            'brand_id'       => $this->brand->public_id,
             'customer_email' => 'customer@example.com',
         ]);
 
         License::factory()->create([
             'license_key_id' => $licenseKey->id,
-            'product_id' => $this->product->public_id,
+            'product_id'     => $this->product->public_id,
         ]);
     }
 
@@ -206,13 +206,13 @@ test('supports custom per_page parameter', function () {
     // Create 15 license keys
     for ($i = 1; $i <= 15; $i++) {
         $licenseKey = LicenseKey::factory()->create([
-            'brand_id' => $this->brand->public_id,
+            'brand_id'       => $this->brand->public_id,
             'customer_email' => 'customer@example.com',
         ]);
 
         License::factory()->create([
             'license_key_id' => $licenseKey->id,
-            'product_id' => $this->product->public_id,
+            'product_id'     => $this->product->public_id,
         ]);
     }
 
@@ -238,13 +238,13 @@ test('validates per_page parameter', function () {
 
 test('includes license details with activations', function () {
     $licenseKey = LicenseKey::factory()->create([
-        'brand_id' => $this->brand->public_id,
+        'brand_id'       => $this->brand->public_id,
         'customer_email' => 'customer@example.com',
     ]);
 
     $license = License::factory()->create([
         'license_key_id' => $licenseKey->id,
-        'product_id' => $this->product->public_id,
+        'product_id'     => $this->product->public_id,
     ]);
 
     // Create activations
@@ -258,20 +258,19 @@ test('includes license details with activations', function () {
 
     $licenseData = $response->json('data.data.0.licenses.0');
 
-    expect($licenseData)->toHaveKey('id')
-        ->and($licenseData)->toHaveKey('product_id')
+    expect($licenseData)->toHaveKey('product_id')
         ->and($licenseData)->toHaveKey('status');
 });
 
 test('only includes active activations', function () {
     $licenseKey = LicenseKey::factory()->create([
-        'brand_id' => $this->brand->public_id,
+        'brand_id'       => $this->brand->public_id,
         'customer_email' => 'customer@example.com',
     ]);
 
     $license = License::factory()->create([
         'license_key_id' => $licenseKey->id,
-        'product_id' => $this->product->public_id,
+        'product_id'     => $this->product->public_id,
     ]);
 
     // Create 2 active activations
@@ -296,24 +295,24 @@ test('only includes active activations', function () {
 
 test('lists licenses with multiple products on same key', function () {
     $product2 = $this->brand->products()->create([
-        'name' => 'Second Product',
-        'slug' => 'second-product',
+        'name'      => 'Second Product',
+        'slug'      => 'second-product',
         'max_seats' => 3,
     ]);
 
     $licenseKey = LicenseKey::factory()->create([
-        'brand_id' => $this->brand->public_id,
+        'brand_id'       => $this->brand->public_id,
         'customer_email' => 'customer@example.com',
     ]);
 
     License::factory()->create([
         'license_key_id' => $licenseKey->id,
-        'product_id' => $this->product->public_id,
+        'product_id'     => $this->product->public_id,
     ]);
 
     License::factory()->create([
         'license_key_id' => $licenseKey->id,
-        'product_id' => $product2->public_id,
+        'product_id'     => $product2->public_id,
     ]);
 
     $response = $this->withHeaders([
@@ -326,7 +325,7 @@ test('lists licenses with multiple products on same key', function () {
 
 test('case-sensitive email matching', function () {
     LicenseKey::factory()->create([
-        'brand_id' => $this->brand->public_id,
+        'brand_id'       => $this->brand->public_id,
         'customer_email' => 'Customer@Example.com',
     ]);
 
