@@ -7,10 +7,10 @@ use App\Modules\License\Models\LicenseActivation;
 
 test('complete workflow: provision -> activate -> check status', function () {
     // Setup
-    $brand = Brand::factory()->create(['is_active' => true]);
+    $brand   = Brand::factory()->create(['is_active' => true]);
     $product = $brand->products()->create([
-        'name' => 'WP Rocket',
-        'slug' => 'wp-rocket',
+        'name'      => 'WP Rocket',
+        'slug'      => 'wp-rocket',
         'max_seats' => 3,
     ]);
 
@@ -19,11 +19,11 @@ test('complete workflow: provision -> activate -> check status', function () {
         'Authorization' => 'Bearer ' . $brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
-                'product_slug' => $product->public_id,
-                'expires_at' => now()->addYear()->toDateString(),
-                'max_activations' => 3,
+                'product_public_id' => $product->public_id,
+                'expires_at'        => now()->addYear()->toDateString(),
+                'max_activations'   => 3,
             ],
         ],
     ]);
@@ -33,14 +33,14 @@ test('complete workflow: provision -> activate -> check status', function () {
     // Step 2: Activate on 2 sites
     $this->postJson("/api/v1/licenses/{$licenseKey}/activate", [
         'instance_identifier' => 'https://site1.com',
-        'instance_type' => 'site',
-        'product_slug' => $product->public_id,
+        'instance_type'       => 'site',
+        'product_public_id'   => $product->public_id,
     ])->assertStatus(201);
 
     $this->postJson("/api/v1/licenses/{$licenseKey}/activate", [
         'instance_identifier' => 'https://site2.com',
-        'instance_type' => 'site',
-        'product_slug' => $product->public_id,
+        'instance_type'       => 'site',
+        'product_public_id'   => $product->public_id,
     ])->assertStatus(201);
 
     // Step 3: Check status
@@ -58,10 +58,10 @@ test('complete workflow: provision -> activate -> check status', function () {
 
 test('status reflects real-time seat availability after activations', function () {
     // Setup
-    $brand = Brand::factory()->create(['is_active' => true]);
+    $brand   = Brand::factory()->create(['is_active' => true]);
     $product = $brand->products()->create([
-        'name' => 'Test Product',
-        'slug' => 'test-product',
+        'name'      => 'Test Product',
+        'slug'      => 'test-product',
         'max_seats' => 5,
     ]);
 
@@ -70,10 +70,10 @@ test('status reflects real-time seat availability after activations', function (
         'Authorization' => 'Bearer ' . $brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
-                'product_slug' => $product->public_id,
-                'max_activations' => 5,
+                'product_public_id' => $product->public_id,
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -87,8 +87,8 @@ test('status reflects real-time seat availability after activations', function (
     // Activate 1 instance
     $this->postJson("/api/v1/licenses/{$licenseKey}/activate", [
         'instance_identifier' => 'https://site1.com',
-        'instance_type' => 'site',
-        'product_slug' => $product->public_id,
+        'instance_type'       => 'site',
+        'product_public_id'   => $product->public_id,
     ]);
 
     // Check status (1 seat used)
@@ -100,8 +100,8 @@ test('status reflects real-time seat availability after activations', function (
     for ($i = 2; $i <= 5; $i++) {
         $this->postJson("/api/v1/licenses/{$licenseKey}/activate", [
             'instance_identifier' => "https://site{$i}.com",
-            'instance_type' => 'site',
-            'product_slug' => $product->public_id,
+            'instance_type'       => 'site',
+            'product_public_id'   => $product->public_id,
         ]);
     }
 
@@ -114,16 +114,16 @@ test('status reflects real-time seat availability after activations', function (
 test('status shows different states for different products on same key', function () {
     // Setup
     $brand = Brand::factory()->create(['is_active' => true]);
-    
+
     $product1 = $brand->products()->create([
-        'name' => 'Active Product',
-        'slug' => 'active-product',
+        'name'      => 'Active Product',
+        'slug'      => 'active-product',
         'max_seats' => 5,
     ]);
 
     $product2 = $brand->products()->create([
-        'name' => 'Full Product',
-        'slug' => 'full-product',
+        'name'      => 'Full Product',
+        'slug'      => 'full-product',
         'max_seats' => 2,
     ]);
 
@@ -132,14 +132,14 @@ test('status shows different states for different products on same key', functio
         'Authorization' => 'Bearer ' . $brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
-                'product_slug' => $product1->public_id,
-                'max_activations' => 5,
+                'product_public_id' => $product1->public_id,
+                'max_activations'   => 5,
             ],
             [
-                'product_slug' => $product2->public_id,
-                'max_activations' => 2,
+                'product_public_id' => $product2->public_id,
+                'max_activations'   => 2,
             ],
         ],
     ]);
@@ -149,32 +149,33 @@ test('status shows different states for different products on same key', functio
     // Activate Product 1: 2/5 seats
     $this->postJson("/api/v1/licenses/{$licenseKey}/activate", [
         'instance_identifier' => 'https://site1.com',
-        'instance_type' => 'site',
-        'product_slug' => $product1->public_id,
+        'instance_type'       => 'site',
+        'product_public_id'   => $product1->public_id,
     ]);
 
     $this->postJson("/api/v1/licenses/{$licenseKey}/activate", [
         'instance_identifier' => 'https://site2.com',
-        'instance_type' => 'site',
-        'product_slug' => $product1->public_id,
+        'instance_type'       => 'site',
+        'product_public_id'   => $product1->public_id,
     ]);
 
     // Activate Product 2: 2/2 seats (full)
     $this->postJson("/api/v1/licenses/{$licenseKey}/activate", [
         'instance_identifier' => 'https://site1.com',
-        'instance_type' => 'site',
-        'product_slug' => $product2->public_id,
+        'instance_type'       => 'site',
+        'product_public_id'   => $product2->public_id,
     ]);
 
     $this->postJson("/api/v1/licenses/{$licenseKey}/activate", [
         'instance_identifier' => 'https://site2.com',
-        'instance_type' => 'site',
-        'product_slug' => $product2->public_id,
+        'instance_type'       => 'site',
+        'product_public_id'   => $product2->public_id,
     ]);
 
     // Check status
     $statusResponse = $this->getJson("/api/v1/licenses/{$licenseKey}/status");
 
+    /** @var array<int, array<string, mixed>> $licenses */
     $licenses = $statusResponse->json('data.licenses');
 
     // Find each license by checking seats
@@ -189,10 +190,10 @@ test('status shows different states for different products on same key', functio
 
 test('heartbeat tracking over multiple status checks', function () {
     // Setup
-    $brand = Brand::factory()->create(['is_active' => true]);
+    $brand   = Brand::factory()->create(['is_active' => true]);
     $product = $brand->products()->create([
-        'name' => 'Test Product',
-        'slug' => 'test-product',
+        'name'      => 'Test Product',
+        'slug'      => 'test-product',
         'max_seats' => 5,
     ]);
 
@@ -201,10 +202,10 @@ test('heartbeat tracking over multiple status checks', function () {
         'Authorization' => 'Bearer ' . $brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'customer@example.com',
-        'products' => [
+        'products'       => [
             [
-                'product_slug' => $product->public_id,
-                'max_activations' => 5,
+                'product_public_id' => $product->public_id,
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -213,22 +214,22 @@ test('heartbeat tracking over multiple status checks', function () {
 
     $this->postJson("/api/v1/licenses/{$licenseKey}/activate", [
         'instance_identifier' => 'https://example.com',
-        'instance_type' => 'site',
-        'product_slug' => $product->public_id,
+        'instance_type'       => 'site',
+        'product_public_id'   => $product->public_id,
     ]);
 
-    $activation = LicenseActivation::first();
+    $activation     = LicenseActivation::first();
     $firstHeartbeat = $activation->last_checked_at;
 
     // Wait and check status again
-    sleep(1);
+    \sleep(1);
     $this->getJson("/api/v1/licenses/{$licenseKey}/status");
 
     $activation->refresh();
     $secondHeartbeat = $activation->last_checked_at;
 
     // Wait and check status again
-    sleep(1);
+    \sleep(1);
     $this->getJson("/api/v1/licenses/{$licenseKey}/status");
 
     $activation->refresh();
@@ -241,16 +242,16 @@ test('heartbeat tracking over multiple status checks', function () {
 test('customer can check their license status across multiple products', function () {
     // Setup
     $brand = Brand::factory()->create(['is_active' => true]);
-    
+
     $rankMathPro = $brand->products()->create([
-        'name' => 'RankMath Pro',
-        'slug' => 'rankmath-pro',
+        'name'      => 'RankMath Pro',
+        'slug'      => 'rankmath-pro',
         'max_seats' => 5,
     ]);
 
     $contentAI = $brand->products()->create([
-        'name' => 'Content AI',
-        'slug' => 'content-ai',
+        'name'      => 'Content AI',
+        'slug'      => 'content-ai',
         'max_seats' => 5,
     ]);
 
@@ -259,10 +260,10 @@ test('customer can check their license status across multiple products', functio
         'Authorization' => 'Bearer ' . $brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'john@example.com',
-        'products' => [
+        'products'       => [
             [
-                'product_slug' => $rankMathPro->public_id,
-                'max_activations' => 5,
+                'product_public_id' => $rankMathPro->public_id,
+                'max_activations'   => 5,
             ],
         ],
     ]);
@@ -274,11 +275,11 @@ test('customer can check their license status across multiple products', functio
         'Authorization' => 'Bearer ' . $brand->api_key,
     ])->postJson('/api/v1/brands/licenses/provision', [
         'customer_email' => 'john@example.com',
-        'license_key' => $licenseKey,
-        'products' => [
+        'license_key'    => $licenseKey,
+        'products'       => [
             [
-                'product_slug' => $contentAI->public_id,
-                'max_activations' => 5,
+                'product_public_id' => $contentAI->public_id,
+                'max_activations'   => 5,
             ],
         ],
     ]);
