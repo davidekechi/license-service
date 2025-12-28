@@ -17,18 +17,18 @@ class HealthController extends Controller
     {
         $checks = [
             'application' => $this->checkApplication(),
-            'database' => $this->checkDatabase(),
-            'cache' => $this->checkCache(),
+            'database'    => $this->checkDatabase(),
+            'cache'       => $this->checkCache(),
         ];
 
         $isHealthy = collect($checks)->every(fn ($check) => $check['status'] === 'healthy');
 
         return response()->json([
-            'status' => $isHealthy ? 'healthy' : 'unhealthy',
-            'service' => 'License Service',
-            'version' => 'v1.0.0',
+            'status'    => $isHealthy ? 'healthy' : 'unhealthy',
+            'service'   => 'License Service',
+            'version'   => 'v1.0.0',
             'timestamp' => now()->toIso8601String(),
-            'checks' => $checks,
+            'checks'    => $checks,
         ], $isHealthy ? 200 : 503);
     }
 
@@ -41,14 +41,14 @@ class HealthController extends Controller
     {
         try {
             return [
-                'status' => 'healthy',
+                'status'      => 'healthy',
                 'environment' => config('app.env'),
-                'debug' => config('app.debug'),
+                'debug'       => config('app.debug'),
             ];
         } catch (\Exception $e) {
             return [
                 'status' => 'unhealthy',
-                'error' => $e->getMessage(),
+                'error'  => $e->getMessage(),
             ];
         }
     }
@@ -62,12 +62,12 @@ class HealthController extends Controller
     {
         try {
             DB::connection()->getPdo();
-            
+
             // Test a simple query
             DB::table('brands')->limit(1)->count();
 
             return [
-                'status' => 'healthy',
+                'status'     => 'healthy',
                 'connection' => config('database.default'),
             ];
         } catch (\Exception $e) {
@@ -77,7 +77,7 @@ class HealthController extends Controller
 
             return [
                 'status' => 'unhealthy',
-                'error' => 'Database connection failed',
+                'error'  => 'Database connection failed',
             ];
         }
     }
@@ -90,7 +90,7 @@ class HealthController extends Controller
     private function checkCache(): array
     {
         try {
-            $testKey = 'health_check_' . time();
+            $testKey   = 'health_check_' . \time();
             $testValue = 'test';
 
             cache()->put($testKey, $testValue, 10);
@@ -106,13 +106,13 @@ class HealthController extends Controller
 
             return [
                 'status' => 'unhealthy',
-                'error' => 'Cache read/write test failed',
+                'error'  => 'Cache read/write test failed',
             ];
         } catch (\Exception $e) {
             return [
                 'status' => 'healthy', // Cache is optional
                 'driver' => config('cache.default'),
-                'note' => 'Cache unavailable but not critical',
+                'note'   => 'Cache unavailable but not critical',
             ];
         }
     }

@@ -15,11 +15,11 @@ class StructuredLog
      */
     public static function licenseProvisioned(string $licenseKey, string $brandId, array $context = []): void
     {
-        Log::info('License provisioned', array_merge([
-            'event' => 'license_provisioned',
+        Log::info('License provisioned', \array_merge([
+            'event'       => 'license_provisioned',
             'license_key' => $licenseKey,
-            'brand_id' => $brandId,
-            'timestamp' => now()->toIso8601String(),
+            'brand_id'    => $brandId,
+            'timestamp'   => now()->toIso8601String(),
         ], $context));
     }
 
@@ -30,11 +30,11 @@ class StructuredLog
      */
     public static function licenseActivated(string $licenseKey, string $instanceIdentifier, array $context = []): void
     {
-        Log::info('License activated', array_merge([
-            'event' => 'license_activated',
-            'license_key' => $licenseKey,
+        Log::info('License activated', \array_merge([
+            'event'               => 'license_activated',
+            'license_key'         => $licenseKey,
             'instance_identifier' => $instanceIdentifier,
-            'timestamp' => now()->toIso8601String(),
+            'timestamp'           => now()->toIso8601String(),
         ], $context));
     }
 
@@ -45,12 +45,12 @@ class StructuredLog
      */
     public static function apiRequest(string $method, string $path, int $statusCode, array $context = []): void
     {
-        Log::info('API request', array_merge([
-            'event' => 'api_request',
-            'method' => $method,
-            'path' => $path,
+        Log::info('API request', \array_merge([
+            'event'       => 'api_request',
+            'method'      => $method,
+            'path'        => $path,
             'status_code' => $statusCode,
-            'timestamp' => now()->toIso8601String(),
+            'timestamp'   => now()->toIso8601String(),
         ], $context));
     }
 
@@ -63,10 +63,10 @@ class StructuredLog
     {
         $level = $success ? 'info' : 'warning';
 
-        Log::$level('Authentication attempt', array_merge([
-            'event' => 'authentication_attempt',
-            'success' => $success,
-            'brand_id' => $brandId,
+        Log::$level('Authentication attempt', \array_merge([
+            'event'     => 'authentication_attempt',
+            'success'   => $success,
+            'brand_id'  => $brandId,
             'timestamp' => now()->toIso8601String(),
         ], $context));
     }
@@ -78,11 +78,11 @@ class StructuredLog
      */
     public static function rateLimitExceeded(string $identifier, string $limiter, array $context = []): void
     {
-        Log::warning('Rate limit exceeded', array_merge([
-            'event' => 'rate_limit_exceeded',
+        Log::warning('Rate limit exceeded', \array_merge([
+            'event'      => 'rate_limit_exceeded',
             'identifier' => $identifier,
-            'limiter' => $limiter,
-            'timestamp' => now()->toIso8601String(),
+            'limiter'    => $limiter,
+            'timestamp'  => now()->toIso8601String(),
         ], $context));
     }
 }

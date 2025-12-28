@@ -23,17 +23,17 @@ class MetricsController extends Controller
         // Cache metrics for 1 minute to reduce database load
         $metrics = Cache::remember('system_metrics', 60, function () {
             return [
-                'brands' => $this->getBrandMetrics(),
-                'products' => $this->getProductMetrics(),
-                'licenses' => $this->getLicenseMetrics(),
+                'brands'      => $this->getBrandMetrics(),
+                'products'    => $this->getProductMetrics(),
+                'licenses'    => $this->getLicenseMetrics(),
                 'activations' => $this->getActivationMetrics(),
-                'timestamp' => now()->toIso8601String(),
+                'timestamp'   => now()->toIso8601String(),
             ];
         });
 
         return response()->json([
             'status' => 'success',
-            'data' => $metrics,
+            'data'   => $metrics,
         ]);
     }
 
@@ -45,8 +45,8 @@ class MetricsController extends Controller
     private function getBrandMetrics(): array
     {
         return [
-            'total' => Brand::count(),
-            'active' => Brand::where('is_active', true)->count(),
+            'total'    => Brand::count(),
+            'active'   => Brand::where('is_active', true)->count(),
             'inactive' => Brand::where('is_active', false)->count(),
         ];
     }
@@ -59,8 +59,8 @@ class MetricsController extends Controller
     private function getProductMetrics(): array
     {
         return [
-            'total' => Product::count(),
-            'active' => Product::where('is_active', true)->count(),
+            'total'    => Product::count(),
+            'active'   => Product::where('is_active', true)->count(),
             'inactive' => Product::where('is_active', false)->count(),
         ];
     }
@@ -74,15 +74,15 @@ class MetricsController extends Controller
     {
         return [
             'license_keys' => [
-                'total' => LicenseKey::count(),
+                'total'         => LicenseKey::count(),
                 'with_licenses' => LicenseKey::has('licenses')->count(),
             ],
             'licenses' => [
-                'total' => License::count(),
-                'valid' => License::where('status', 'valid')->count(),
+                'total'     => License::count(),
+                'valid'     => License::where('status', 'valid')->count(),
                 'suspended' => License::where('status', 'suspended')->count(),
                 'cancelled' => License::where('status', 'cancelled')->count(),
-                'expired' => License::where('expires_at', '<', now())->count(),
+                'expired'   => License::where('expires_at', '<', now())->count(),
             ],
         ];
     }
@@ -95,13 +95,13 @@ class MetricsController extends Controller
     private function getActivationMetrics(): array
     {
         $activeActivations = LicenseActivation::whereNull('deactivated_at')->count();
-        $totalActivations = LicenseActivation::count();
+        $totalActivations  = LicenseActivation::count();
 
         return [
-            'total' => $totalActivations,
-            'active' => $activeActivations,
+            'total'       => $totalActivations,
+            'active'      => $activeActivations,
             'deactivated' => $totalActivations - $activeActivations,
-            'by_type' => DB::table('license_activations')
+            'by_type'     => DB::table('license_activations')
                 ->select('instance_type', DB::raw('count(*) as count'))
                 ->whereNull('deactivated_at')
                 ->whereNull('deleted_at')
