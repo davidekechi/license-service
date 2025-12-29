@@ -441,26 +441,29 @@ Only changes needed:
 
 ### 2. Synchronous vs Asynchronous Audit Logging
 
-**Decision:** Asynchronous (Events + Queue)
+**Decision:** Synchronous (Events without Queue)
 
 **Trade-offs:**
 
 - **Consistency** — Synchronous: ✅ Immediate · Asynchronous: ⚠️ Eventual  
-- **Performance** — Synchronous: ❌ Slower requests · Asynchronous: ✅ Faster requests  
+- **Performance** — Synchronous: ❌ Slightly slower requests · Asynchronous: ✅ Faster requests  
 - **Reliability** — Synchronous: ⚠️ Fails with request · Asynchronous: ✅ Retryable  
 - **Complexity** — Synchronous: ✅ Simple · Asynchronous: ❌ Queue required
 
-**Why Async:**
+**Why Synchronous:**
 
-- Audit logging is not critical path
-- Request performance matters (< 200ms target)
-- Queue provides retry mechanism
-- Can batch audit writes
+- Small-scale project with low request volume  
+- No production deployment or background worker infrastructure  
+- Audit logging overhead is minimal and predictable  
+- Immediate consistency is preferred for debugging and visibility  
+- Events used for decoupling intent, not deferred execution  
+- Avoids queue setup, monitoring, and failure handling 
 
 **Risk Mitigation:**
 
-- Failed audit jobs logged separately
-- Queue monitoring alerts on failures
+- Audit writes are lightweight and fast  
+- Failures surface immediately during development  
+- Can be migrated to queued async processing later if scale increases
 
 ---
 
@@ -725,7 +728,7 @@ Cache::remember("brand:{$id}:products", 3600, fn() => ...);
 
 ## User Story Implementation Status
 
-### ✅ Fully Implemented (Production-Ready)
+### ✅ Fully Implemented
 
 #### US1: Provision License
 
