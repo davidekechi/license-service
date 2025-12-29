@@ -18,9 +18,9 @@ This project follows a modular monolith architecture with the following modules:
 - Composer
 
 ## Installation
+Fork and clone the repo
+
 ```bash
-# Clone repository
-git clone https://github.com/davidekechi/license-service.git
 cd license-service
 
 # Copy environment file
@@ -28,6 +28,9 @@ cp .env.example .env
 
 # Build and start up docker composer
 docker compose up -d --build
+
+# Check that containers are up and running
+docker ps
 
 # Bash into application container
 docker exec -it license-service-app bash
@@ -39,8 +42,14 @@ composer install --no-scripts
 php artisan key:generate
 
 # Configure database in .env
-# Then run migrations
-php artisan migrate
+# Then run migrations and seed test data
+php artisan migrate --seed
+
+# Check system health
+http://localhost:8000/health # See /docs/MONITORING.md for more observability information
+
+# Import postman collections in /docs using the POSTMAN_SETUP.md as guide
+
 
 ## Database Schema
 
@@ -61,11 +70,6 @@ php artisan migrate
 - Same module: Direct relationships using `id`
 - Cross-module: Relationships using `public_id` (ULID)
 - Cross-module access: Via Service layer with interfaces
+```
 
-## Development
-
-Currently on **Day 1, Hour 1** - Database schema complete.
-
-## License
-
-Proprietary
+**Code quality and tests in /docs/CODE_QUALITY.md**
