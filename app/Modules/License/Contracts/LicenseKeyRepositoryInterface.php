@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\License\Contracts;
 
 use App\Modules\License\Models\LicenseKey;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 interface LicenseKeyRepositoryInterface
@@ -30,6 +31,13 @@ interface LicenseKeyRepositoryInterface
      * @return Collection<int, LicenseKey>
      */
     public function getByCustomerEmail(string $email): Collection;
+
+    /**
+     * Get paginated license keys for a customer email.
+     *
+     * @return LengthAwarePaginator<int, LicenseKey>
+     */
+    public function paginateByCustomerEmail(string $email, int $page = 1, int $perPage = 20): LengthAwarePaginator;
 
     /**
      * Get all license keys for a brand.

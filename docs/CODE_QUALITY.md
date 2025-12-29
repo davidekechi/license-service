@@ -46,7 +46,7 @@ Create a testing database and run migrations
 docker exec -it license-service-postgres psql -U postgres -c "CREATE DATABASE license_service_test;"
 
 # Run migrations and seed test data
-php artisan migrate:fresh --seed --env=testing
+php artisan migrate:fresh --env=testing
 ```
 
 Run tests
