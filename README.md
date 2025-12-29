@@ -72,7 +72,7 @@ The License Service is a **production-ready, centralized license management syst
 
 ### Technology Stack
 
-- **Framework:** Laravel 11
+- **Framework:** Laravel 12
 - **Language:** PHP 8.2
 - **Database:** PostgreSQL 15
 - **Testing:** Pest PHP
@@ -109,17 +109,11 @@ Ensure you have the following installed:
 - **Docker:** >= 20.10
 - **Docker Compose:** >= 2.0
 
-**OR** for local development without Docker:
-
-- **PHP:** >= 8.2 with extensions: pdo_pgsql, mbstring, xml, curl, zip
-- **Composer:** >= 2.6
-- **PostgreSQL:** >= 15
-
 ---
 
 ## Installation
 
-### Option 1: Docker (Recommended)
+### Using Docker
 
 #### 1. Clone the Repository
 ```bash
@@ -207,34 +201,76 @@ APP_NAME="License Service"
 APP_ENV=local
 APP_DEBUG=true
 APP_URL=http://localhost:8000
-APP_VERSION=v1.0.0
+APP_TIMEZONE=UTC
 
-# Database
+APP_LOCALE=en
+APP_FALLBACK_LOCALE=en
+APP_FAKER_LOCALE=en_US
+
+APP_MAINTENANCE_DRIVER=file
+# APP_MAINTENANCE_STORE=database
+
+# PHP_CLI_SERVER_WORKERS=4
+
+BCRYPT_ROUNDS=12
+
+LOG_CHANNEL=stack
+LOG_STACK=single
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
+
 DB_CONNECTION=pgsql
 DB_HOST=postgres
 DB_PORT=5432
 DB_DATABASE=license_service
-DB_USERNAME=license_user
+DB_USERNAME=postgres
 DB_PASSWORD=secret
 
-# Queue (for async audit logging)
-QUEUE_CONNECTION=database
+# Rate Limits - these are for tests and should be changed while using the application
+GENERAL_LIMIT=120
+BRAND_LIMIT=120
+PUBLIC_LIMIT=120
+ACTIVATION_LIMIT=120
 
-# Cache
-CACHE_DRIVER=file
-
-# CORS
+# CORS Configuration
 CORS_ALLOWED_ORIGINS=*
 
-# Rate Limiting - These values are for tests only and should be changed
-RATE_LIMIT_API=120
-RATE_LIMIT_BRAND_API=120
-RATE_LIMIT_PUBLIC_API=120
-RATE_LIMIT_ACTIVATION=120
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_PATH=/
+SESSION_DOMAIN=null
 
-# Monitoring (Optional)
-SENTRY_LARAVEL_DSN=
-SENTRY_TRACES_SAMPLE_RATE=0.1
+BROADCAST_CONNECTION=log
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=database
+
+CACHE_STORE=redis
+# CACHE_PREFIX=
+
+MEMCACHED_HOST=127.0.0.1
+
+REDIS_CLIENT=phpredis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+
+MAIL_MAILER=log
+MAIL_SCHEME=null
+MAIL_HOST=127.0.0.1
+MAIL_PORT=2525
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=
+AWS_USE_PATH_STYLE_ENDPOINT=false
+
+VITE_APP_NAME="${APP_NAME}"
 ```
 
 ---
@@ -358,11 +394,10 @@ php artisan test tests/Feature/
 
 ### Test Coverage
 
-- **Total Tests:** 330+
+- **Total Tests:** 220+
 - **Unit Tests:** 60+ (models, services, DTOs)
-- **Feature Tests:** 240+ (API endpoints)
-- **Integration Tests:** 30+ (complete workflows)
-- **Performance Tests:** 4 (response time benchmarks)
+- **Feature Tests:** 140+ (API endpoints)
+- **Integration Tests:** 20+ (complete workflows)
 
 **Code quality and tests in /docs/CODE_QUALITY.md**
 
@@ -734,8 +769,7 @@ license-service/
 │   │   ├── ErrorHandling/
 │   │   ├── Integration/
 │   │   ├── License/
-│   │   ├── Observability/
-│   │   └── Performance/
+│   │   └── Observability/
 │   └── Unit/                              # Unit tests
 ├── docker-compose.yml                     # Docker configuration
 ├── Explanation.md                         # Technical explanation (THIS FILE IS CRITICAL)
