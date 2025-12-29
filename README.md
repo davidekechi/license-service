@@ -436,7 +436,7 @@ Content-Type: application/json
   "customer_email": "customer@example.com",
   "products": [
     {
-      "product_slug": "{product_public_id}",
+      "product_public_id": "{product_public_id}",
       "expires_at": "2026-12-31",
       "max_activations": 5
     }
@@ -466,7 +466,7 @@ Content-Type: application/json
 {
   "instance_identifier": "https://example.com",
   "instance_type": "site",
-  "product_slug": "{product_public_id}",
+  "product_public_id": "{product_public_id}",
   "instance_meta": {
     "ip": "192.168.1.1",
     "user_agent": "WordPress/6.0"
