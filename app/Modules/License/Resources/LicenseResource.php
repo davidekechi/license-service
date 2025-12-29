@@ -41,10 +41,28 @@ class LicenseResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // Get product and brand data loaded through service layer
+        $product = $this->resource->getAttribute('_product')
+            ?? $this->additionalData['product']
+            ?? null;
+
+        $brand = $this->resource->getAttribute('_brand')
+            ?? $this->additionalData['brand']
+            ?? null;
+
         return [
-            'public_id'       => $this->resource->public_id,
-            'product_id'      => $this->resource->product_id,
-            'product'         => $this->additionalData['product'] ?? null,
+            'public_id' => $this->resource->public_id,
+            'product'   => $product ? [
+                'public_id' => $product['public_id'] ?? null,
+                'name'      => $product['name']      ?? null,
+                'slug'      => $product['slug']      ?? null,
+                'max_seats' => $product['max_seats'] ?? null,
+                'is_active' => $product['is_active'] ?? null,
+            ] : null,
+            'brand' => $brand ? [
+                'public_id' => $brand['public_id'] ?? null,
+                'name'      => $brand['name']      ?? null,
+            ] : null,
             'status'          => $this->resource->status->value,
             'is_valid'        => $this->resource->isValid(),
             'is_expired'      => $this->resource->isExpired(),

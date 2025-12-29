@@ -22,8 +22,22 @@ class LicenseStatusResource extends JsonResource
             'licenses'       => $this->resource->licenses->map(function ($license) {
                 $activeCount = $license->activations->count();
 
+                // Get product and brand data loaded through service layer
+                $product = $license->getAttribute('_product');
+                $brand   = $license->getAttribute('_brand');
+
                 return [
-                    'product_id' => $license->product_id,
+                    'product' => $product ? [
+                        'public_id' => $product['public_id'] ?? null,
+                        'name'      => $product['name']      ?? null,
+                        'slug'      => $product['slug']      ?? null,
+                        'max_seats' => $product['max_seats'] ?? null,
+                        'is_active' => $product['is_active'] ?? null,
+                    ] : null,
+                    'brand' => $brand ? [
+                        'public_id' => $brand['public_id'] ?? null,
+                        'name'      => $brand['name']      ?? null,
+                    ] : null,
                     'status'     => $license->status->value,
                     'is_valid'   => $license->isValid(),
                     'is_expired' => $license->isExpired(),

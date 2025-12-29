@@ -45,7 +45,7 @@ class ProvisionLicenseRequest extends FormRequest
             'customer_email.email'                  => 'Customer email must be a valid email address',
             'products.required'                     => 'At least one product is required',
             'products.min'                          => 'At least one product is required',
-            'products.*.product_public_id.required' => 'Product slug is required for each product',
+            'products.*.product_public_id.required' => 'Product public id is required for each product',
             'products.*.expires_at.after'           => 'Expiration date must be in the future',
             'license_key.size'                      => 'License key must be 19 characters long',
         ];

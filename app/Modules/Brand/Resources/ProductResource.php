@@ -17,8 +17,11 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'public_id'    => $this->resource->public_id,
-            'brand_id'     => $this->resource->brand->public_id,
+            'public_id' => $this->resource->public_id,
+            'brand'     => [
+                'public_id' => $this->resource->brand->public_id,
+                'name'      => $this->resource->brand->name,
+            ],
             'name'         => $this->resource->name,
             'slug'         => $this->resource->slug,
             'max_seats'    => $this->resource->max_seats,
