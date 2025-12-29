@@ -20,3 +20,21 @@ parameters:
     # Laravel-specific helpers (optional)
     bootstrapFiles:
         - bootstrap/app.php
+
+    # Ignore Pest internal class warnings and custom expectations (false positives)
+    ignoreErrors:
+        - '#Call to method .* of internal class Pest\\(Mixins|PendingCalls)\\.* from outside its root namespace Pest\.#'
+        - '#Call to an undefined method Pest\\Expectation(<.*>)?::toBeModel\(\)\.#'
+        - '#Call to an undefined method Pest\\Expectation(<.*>)?::toHaveUlid\(\)\.#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$repository\.#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$service\.#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$generator\.#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$product\.#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$brand\.#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$license\.#'
+        - '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$licenseKey\.#'
+        - '#Parameter \#1 \$licenseKeyRepository of class .* constructor expects .*, Mockery\\MockInterface given\.#'
+        - '#Call to an undefined method PHPUnit\\Framework\\TestCase::withHeaders\(\)\.#'
+        - '#Call to an undefined method PHPUnit\\Framework\\TestCase::postJson\(\)\.#'
+        - '#Call to an undefined method PHPUnit\\Framework\\TestCase::getJson\(\)\.#'
+        - '#Call to an undefined method PHPUnit\\Framework\\TestCase::artisan\(\)\.#'

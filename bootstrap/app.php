@@ -1,7 +1,11 @@
 <?php
 
+use App\Exceptions\Handler;
+use App\Modules\Shared\Middleware\AddApiVersion;
+use App\Modules\Shared\Middleware\AuthenticateBrand;
+use App\Modules\Shared\Middleware\ValidateLicenseKey;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -13,24 +17,25 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'admin' => \App\Domains\Shared\Middleware\EnsureUserIsAdmin::class,
-            'student' => \App\Domains\Shared\Middleware\EnsureUserIsStudent::class,
-            'mentor' => \App\Domains\Shared\Middleware\EnsureUserIsMentor::class,
-            'mentor.approved' => \App\Domains\Shared\Middleware\EnsureMentorIsApproved::class,
-            'email.verified' => \App\Domains\Shared\Middleware\EnsureEmailVerified::class,
-            'onboarding.completed' => \App\Domains\Shared\Middleware\EnsureOnboardingCompleted::class
+            'auth.brand' => AuthenticateBrand::class,
+            'validate.license.key' => ValidateLicenseKey::class,
+        ]);
+
+        // Add API version header to all API responses
+        $middleware->api(prepend: [
+            AddApiVersion::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
+    ->withExceptions(function (): void {
         //
     })
+    ->withSingletons([
+        ExceptionHandler::class => Handler::class,
+    ])
     ->withProviders([
-        \App\Domains\Auth\Providers\AuthServiceProvider::class,
-        \App\Domains\Client\Courses\Providers\CourseServiceProvider::class,
-        \App\Domains\Client\Dashboard\Providers\DashboardServiceProvider::class,
-        \App\Domains\Client\Payments\Providers\PaymentServiceProvider::class,
-        \App\Domains\Client\AIRecommendation\Providers\AIRecommendationServiceProvider::class,
-        \App\Domains\Mentor\Courses\Providers\CourseServiceProvider::class,
-        \App\Domains\Mentor\Dashboard\Providers\DashboardServiceProvider::class,
+        \App\Modules\Brand\Providers\BrandServiceProvider::class,
+        \App\Modules\License\Providers\LicenseServiceProvider::class,
+        \App\Modules\AuditLog\Providers\AuditLogServiceProvider::class,
+        \App\Modules\Shared\Providers\EventServiceProvider::class,
     ])
     ->create();
