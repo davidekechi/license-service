@@ -134,7 +134,7 @@ cp .env.example .env
 
 #### 3. Build and Start Containers
 ```bash
-docker-compose up -d
+docker-compose up -d --build
 ```
 
 This will start:
@@ -363,6 +363,8 @@ php artisan test tests/Feature/
 - **Feature Tests:** 240+ (API endpoints)
 - **Integration Tests:** 30+ (complete workflows)
 - **Performance Tests:** 4 (response time benchmarks)
+
+**Code quality and tests in /docs/CODE_QUALITY.md**
 
 ### Static Analysis (PHPStan)
 ```bash
