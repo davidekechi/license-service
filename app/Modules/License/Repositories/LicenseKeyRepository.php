@@ -6,6 +6,7 @@ namespace App\Modules\License\Repositories;
 
 use App\Modules\License\Contracts\LicenseKeyRepositoryInterface;
 use App\Modules\License\Models\LicenseKey;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class LicenseKeyRepository implements LicenseKeyRepositoryInterface
@@ -52,6 +53,24 @@ class LicenseKeyRepository implements LicenseKeyRepositoryInterface
         return $this->model->where('customer_email', $email)
             ->with(['licenses.activations'])
             ->get();
+    }
+
+    /**
+     * Get paginated license keys for a customer email.
+     *
+     * @return LengthAwarePaginator<int, LicenseKey>
+     */
+    public function paginateByCustomerEmail(string $email, int $page = 1, int $perPage = 20): LengthAwarePaginator
+    {
+        return $this->model->where('customer_email', $email)
+            ->with(['licenses.activations' => function ($query) {
+                $query->whereNull('deactivated_at');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->paginate(
+                perPage: $perPage,
+                page: $page
+            );
     }
 
     /**
