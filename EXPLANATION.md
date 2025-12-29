@@ -2,12 +2,12 @@
 
 ## Table of Contents
 1. [Problem Statement](#problem-statement)
-2. [Architecture Overview](#architecture-overview)
-3. [Data Model](#data-model)
-4. [API Design](#api-design)
-5. [Multi-Tenancy Strategy](#multi-tenancy-strategy)
-6. [Integration Points](#integration-points)
-7. [Trade-offs & Design Decisions](#trade-offs--design-decisions)
+2. [Multi-Tenancy Strategy](#multi-tenancy-strategy)
+3. [Integration Points](#integration-points)
+4. [Architecture Overview](#architecture-overview)
+5. [Data Model](#data-model)
+6. [Trade-offs & Design Decisions](#trade-offs--design-decisions)
+7. [API Design](#api-design)
 8. [Scaling Strategy](#scaling-strategy)
 9. [User Story Implementation Status](#user-story-implementation-status)
 10. [Known Limitations](#known-limitations)
