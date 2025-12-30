@@ -9,8 +9,9 @@
 6. [Trade-offs & Design Decisions](#trade-offs--design-decisions)
 7. [API Design](#api-design)
 8. [Scaling Strategy](#scaling-strategy)
-9. [User Story Implementation Status](#user-story-implementation-status)
-10. [Known Limitations](#known-limitations)
+9. [Extensibility & Evolution](#extensibility--evolution)
+10. [User Story Implementation Status](#user-story-implementation-status)
+11. [Known Limitations](#known-limitations)
 
 ---
 
@@ -395,7 +396,7 @@ app/Modules/
 
 1. **Concern Seperations:** Clear, well-defined module boundaries
 2. **Isolation:** Modules can be tested in isolation with minimal dependencies
-3. **Scaling:** Enables gradual extraction to microservices when needed
+3. **Extensibility:** New features and modules can be added, managed, tested and deployed independently
 4. **Development:** Teams can work independently with fewer merge conflicts
 
 ```
@@ -723,6 +724,238 @@ Cache::remember("brand:{$id}:products", 3600, fn() => ...);
 - 1-minute TTL
 - Reduces database load for status checks
 ```
+
+---
+
+## Extensibility & Evolution
+
+The modular architecture enables the system to evolve with growing business requirements while maintaining clean boundaries and manageable complexity.
+
+### Evolution Path: Brand Self-Service
+
+**Current State:** Brands are seeded manually via database migrations
+
+**Future Evolution:** Self-service brand registration and management
+
+#### Phase 1: Brand Registration
+```php
+POST /api/v1/brands/register
+Body: {
+  "name": "New Brand Inc",
+  "slug": "new-brand",
+  "contact_email": "admin@newbrand.com"
+}
+
+Response: {
+  "brand_id": "01JKZ...",
+  "api_key": "sk_live_new-brand_a7f3...",
+  "status": "pending_verification"
+}
+```
+
+**Implementation:**
+- New `BrandRegistrationService` in Brand module
+- Email verification workflow
+- Admin approval workflow
+- Automatic API key generation and rotation
+
+#### Phase 2: Brand Product Management
+```php
+POST /api/v1/brands/products
+Body: {
+  "name": "Premium Plugin",
+  "slug": "premium-plugin",
+  "max_seats": 5,
+  "is_active": true
+}
+
+Response: {
+  "product_id": "01JKZ...",
+  "brand_id": "01JKY...",
+  "created_at": "..."
+}
+```
+
+**Implementation:**
+- Product CRUD endpoints in Brand module
+- Brand-scoped product management
+- Product activation/deactivation
+- Product analytics and insights
+
+#### Phase 3: Brand Dashboard & Analytics
+```php
+GET /api/v1/brands/dashboard/metrics
+Response: {
+  "total_licenses": 15240,
+  "active_licenses": 12890,
+  "total_activations": 45120,
+  "revenue_impact": {...},
+  "top_products": [...]
+}
+```
+
+**Implementation:**
+- New `BrandAnalytics` module
+- Metrics aggregation service
+- Dashboard API endpoints
+- Real-time license usage tracking
+
+### Why Modular Architecture Supports This Evolution
+
+**1. Isolated Brand Logic**
+```
+app/Modules/Brand/
+├── Controllers/
+│   ├── BrandRegistrationController.php  # New
+│   └── ProductManagementController.php  # New
+├── Services/
+│   ├── BrandRegistrationService.php     # New
+│   └── ProductManagementService.php     # New
+└── ...
+```
+
+All brand-related evolution stays within the Brand module:
+- No impact on License module
+- No cross-module breaking changes
+- Independent testing and deployment
+
+**2. Clean Service Boundaries**
+
+The existing `BrandLookupService` interface enables seamless enhancement:
+```php
+interface BrandLookupServiceInterface
+{
+    // Existing methods
+    public function findBrandByPublicId(string $publicId): ?Brand;
+    public function findProductByPublicId(string $publicId): ?Product;
+
+    // Future additions (backward compatible)
+    public function getBrandMetrics(string $brandId): BrandMetrics;
+    public function listBrandProducts(string $brandId): Collection;
+}
+```
+
+License module continues to use the interface without changes.
+
+**3. Database Independence**
+
+Cross-module references use ULIDs:
+```sql
+-- License module references Brand module via ULID
+licenses.product_id → products.public_id
+
+-- Can extract Brand module to separate database later
+-- No integer FK constraints to break
+```
+
+**4. Future Microservice Extraction**
+
+When brand management becomes complex enough:
+
+```
+Before (Current):
+┌─────────────────────────────┐
+│  License Service (Monolith) │
+│  ┌─────────┐  ┌──────────┐ │
+│  │ Brand   │  │ License  │ │
+│  │ Module  │  │ Module   │ │
+│  └─────────┘  └──────────┘ │
+└─────────────────────────────┘
+
+After (Microservices):
+┌─────────────┐    ┌──────────────┐
+│   Brand     │    │   License    │
+│   Service   │◄───│   Service    │
+│             │HTTP│              │
+│ - Register  │    │ - Provision  │
+│ - Products  │    │ - Activate   │
+└─────────────┘    └──────────────┘
+```
+
+**Migration Steps:**
+1. Extract Brand module to separate repository
+2. Replace in-process `BrandService` calls with HTTP API calls
+3. Deploy Brand Service independently
+4. No changes needed in License module logic
+
+**5. Testing Independence**
+
+Each evolution can be tested independently:
+```php
+// Test brand registration without touching license logic
+class BrandRegistrationTest extends TestCase
+{
+    public function test_brand_can_self_register()
+    {
+        // Test only Brand module
+    }
+}
+
+// Existing license tests remain unchanged
+class ProvisionLicenseTest extends TestCase
+{
+    public function test_can_provision_license()
+    {
+        // Still works with mock BrandService
+    }
+}
+```
+
+### Real-World Evolution Example
+
+**Scenario:** Add brand subscription tiers (Free, Pro, Enterprise)
+
+**Without Modular Architecture:**
+```
+Changes needed across entire codebase:
+- Update brands table
+- Modify license provisioning logic
+- Change activation validation
+- Update all API responses
+- Risk breaking existing functionality
+```
+
+**With Modular Architecture:**
+```
+Changes isolated to Brand module:
+- Add subscription_tier to brands table
+- Create SubscriptionService in Brand module
+- Update BrandLookupService to include tier
+- License module receives tier via service (no changes needed)
+```
+
+### Additional Evolution Paths Enabled by Modularity
+
+**1. Multi-Currency Support**
+- Add `Payment` module
+- No changes to License or Brand modules
+- Clean separation of concerns
+
+**2. Advanced Analytics**
+- Add `Analytics` module
+- Listens to license events
+- Provides insights without touching core logic
+
+**3. Customer Self-Service Portal**
+- Add `Customer` module
+- Reuses existing License APIs
+- Independent frontend and backend
+
+**4. Integration Marketplace**
+- Add `Integration` module
+- Connects brands with third-party tools
+- Extensible without core changes
+
+### Key Takeaway
+
+The modular architecture provides a **sustainable growth path** where:
+- New features are **additive**, not disruptive
+- Modules can **evolve independently**
+- **Testing remains isolated** and manageable
+- **Deployment can be modular** (monolith now, microservices later)
+- **Team scaling** becomes easier (one team per module)
+
+This is why the application is built as a modular monolith rather than a traditional monolith—it's designed for evolution from day one.
 
 ---
 
