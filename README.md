@@ -141,6 +141,14 @@ This will start:
 docker exec -it license-service-app composer install --no-scripts
 ```
 
+If you encounter an issue with the vendor directory or anything like an autoload problem or dependency issue, delete the vendor directory from outside the container, bash into the container and install composer again:
+
+```bash
+rm -rf vendor
+
+docker exec -it license-service-app composer install --no-scripts
+```
+
 #### 5. Generate Application Key
 ```bash
 docker exec -it license-service-app php artisan key:generate
